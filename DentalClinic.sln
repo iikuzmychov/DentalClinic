@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalClinic.WebApi", "src\DentalClinic.WebApi\DentalClinic.WebApi.csproj", "{0B0796AB-3995-424D-83E3-2E740C9CD651}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalClinic.Infrastructure", "src\DentalClinic.Infrastructure\DentalClinic.Infrastructure.csproj", "{A8020F75-3BE2-477D-8E72-AF8168F0C84B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalClinic.Domain", "src\DentalClinic.Domain\DentalClinic.Domain.csproj", "{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".items", ".items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{176D9A91-E1DE-4EAB-B18E-77644D33711F}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\add-migration.sh = scripts\add-migration.sh
+		scripts\launch-databse.sh = scripts\launch-databse.sh
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B0796AB-3995-424D-83E3-2E740C9CD651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B0796AB-3995-424D-83E3-2E740C9CD651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B0796AB-3995-424D-83E3-2E740C9CD651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B0796AB-3995-424D-83E3-2E740C9CD651}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8020F75-3BE2-477D-8E72-AF8168F0C84B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8020F75-3BE2-477D-8E72-AF8168F0C84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8020F75-3BE2-477D-8E72-AF8168F0C84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8020F75-3BE2-477D-8E72-AF8168F0C84B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B0796AB-3995-424D-83E3-2E740C9CD651} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A8020F75-3BE2-477D-8E72-AF8168F0C84B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C7B2FE79-B46D-4C23-993B-FF7C4D9DB92F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35C61FBF-3D94-4FE2-9CF5-3BD33A21A114}
+	EndGlobalSection
+EndGlobal
