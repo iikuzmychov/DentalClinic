@@ -22,18 +22,32 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     public async Task<ListPatientsResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
+        [FromQuery] string? name = null,
         CancellationToken cancellationToken = default)
     {
-        var patients = await dbContext.Patients
+        var query = dbContext.Patients
             .AsNoTracking()
             .OrderBy(patient => patient.LastName)
                 .ThenBy(patient => patient.FirstName)
                     .ThenBy(patient => patient.Surname)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var lowerInvariantName = name.ToLower();
+
+            query = query.Where(user =>
+                user.LastName.ToLower().Contains(lowerInvariantName) ||
+                user.FirstName.ToLower().Contains(lowerInvariantName) ||
+                (!string.IsNullOrWhiteSpace(user.Surname) && user.Surname!.ToLower().Contains(lowerInvariantName)));
+        }
+
+        var patients = await query
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var totalCount = await dbContext.Patients.CountAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
         var totalPagesCount = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new ListPatientsResponse
@@ -46,8 +60,7 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
                     FirstName = patient.FirstName,
                     Surname = patient.Surname,
                     Email = patient.Email?.Value,
-                    PhoneNumber = patient.PhoneNumber,
-                    Notes = patient.Notes
+                    PhoneNumber = patient.PhoneNumber
                 })
                 .ToList(),
             TotalCount = totalCount,

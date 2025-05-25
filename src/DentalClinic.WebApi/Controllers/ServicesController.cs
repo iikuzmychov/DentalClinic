@@ -21,16 +21,25 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     public async Task<ListServicesResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
+        [FromQuery] string? name = null,
         CancellationToken cancellationToken = default)
     {
-        var services = await dbContext.Services
+        var query = dbContext.Services
             .AsNoTracking()
             .OrderBy(service => service.Name)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(service => service.Name.ToLower().Contains(name.ToLower()));
+        }
+
+        var services = await query
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var totalCount = await dbContext.Services.CountAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
         var totalPagesCount = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new ListServicesResponse

@@ -28,7 +28,7 @@ public static class OpenApiExtensions
         var bearerScheme = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
-            Scheme = JwtBearerDefaults.AuthenticationScheme.ToLowerInvariant(),
+            Scheme = JwtBearerDefaults.AuthenticationScheme.ToLower(),
             BearerFormat = "JWT",
             In = ParameterLocation.Header,
             Reference = new OpenApiReference

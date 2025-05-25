@@ -8,5 +8,4 @@ public sealed record ListPatientsResponseItem
     public required string? Surname { get; init; }
     public required string? Email { get; init; }
     public required string? PhoneNumber { get; init; }
-    public required string? Notes { get; init; }
 }

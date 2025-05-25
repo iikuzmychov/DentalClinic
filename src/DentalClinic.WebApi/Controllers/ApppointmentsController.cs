@@ -21,9 +21,10 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
     [HttpGet]
     [ProducesResponseType<ListAppointmentsResponse>(StatusCodes.Status200OK)]
     public async Task<ListAppointmentsResponse> ListAsync(
-        [FromQuery] DateTime? startDate = null,
-        [FromQuery] DateTime? endStartTime = null,
+        [FromQuery] DateTime? startDateTime = null,
+        [FromQuery] DateTime? endDateTime = null,
         [FromQuery] Guid? dentistId = null,
+        [FromQuery] Guid? patientId = null,
         [FromQuery] AppointmentStatus? status = null,
         CancellationToken cancellationToken = default)
     {
@@ -35,19 +36,24 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
             .OrderBy(appointment => appointment.StartTime)
             .AsQueryable();
 
-        if (startDate is not null)
+        if (startDateTime is not null)
         {
-            query = query.Where(appointment => appointment.StartTime >= startDate.Value);
+            query = query.Where(appointment => appointment.EndTime > startDateTime.Value);
         }
 
-        if (endStartTime is not null)
+        if (endDateTime is not null)
         {
-            query = query.Where(appointment => appointment.StartTime <= endStartTime.Value);
+            query = query.Where(appointment => appointment.StartTime < endDateTime.Value);
         }
 
         if (dentistId is not null)
         {
             query = query.Where(appointment => appointment.Dentist.Id == new GuidEntityId<User>(dentistId.Value));
+        }
+
+        if (patientId is not null)
+        {
+            query = query.Where(appointment => appointment.Patient.Id == new GuidEntityId<Patient>(patientId.Value));
         }
 
         if (status is not null)

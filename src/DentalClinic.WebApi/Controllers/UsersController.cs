@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DentalClinic.WebApi.Controllers;
 
@@ -23,18 +24,38 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     public async Task<ListUsersResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
+        [FromQuery] string? name = null,
+        [FromQuery] Role? role = null,
         CancellationToken cancellationToken = default)
     {
-        var users = await dbContext.Users
+        var query = dbContext.Users
             .AsNoTracking()
             .OrderBy(user => user.LastName)
                 .ThenBy(user => user.FirstName)
                     .ThenBy(user => user.Surname)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var lowerInvariantName = name.ToLower();
+
+            query = query.Where(user =>
+                user.LastName.ToLower().Contains(lowerInvariantName) ||
+                user.FirstName.ToLower().Contains(lowerInvariantName) ||
+                (!string.IsNullOrWhiteSpace(user.Surname) && user.Surname!.ToLower().Contains(lowerInvariantName)));
+        }
+
+        if (role.HasValue)
+        {
+            query = query.Where(user => user.Role == role.Value);
+        }
+
+        var users = await query
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var totalCount = await dbContext.Users.CountAsync(cancellationToken);
+        var totalCount = await query.CountAsync(cancellationToken);
         var totalPagesCount = (int)Math.Ceiling(totalCount / (double)pageSize);
 
         return new ListUsersResponse
