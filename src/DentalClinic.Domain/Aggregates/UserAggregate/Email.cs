@@ -14,7 +14,7 @@ public sealed partial record Email
 
     public Email(string value)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(nameof(value));
+        ArgumentException.ThrowIfNullOrWhiteSpace(value);
 
         if (value.Length < MinLength || value.Length > MaxLength)
         {

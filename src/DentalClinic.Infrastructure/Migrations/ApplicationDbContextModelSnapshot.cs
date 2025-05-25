@@ -22,6 +22,26 @@ namespace DentalClinic.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DentalClinic.Domain.Aggregates.ServiceAggregate.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Services");
+                });
+
             modelBuilder.Entity("DentalClinic.Domain.Aggregates.UserAggregate.User", b =>
                 {
                     b.Property<Guid>("Id")

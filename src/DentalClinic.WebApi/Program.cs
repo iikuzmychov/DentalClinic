@@ -59,6 +59,7 @@ if (app.Environment.IsDevelopment())
     {
         options
             .AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
+            .WithPersistentAuthentication(true)
             .WithDownloadButton(false);
     });
 }
