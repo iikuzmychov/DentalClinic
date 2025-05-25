@@ -1,4 +1,4 @@
-﻿namespace DentalClinic.WebApi.Models.Requests;
+﻿namespace DentalClinic.WebApi.Models.Services;
 
 public sealed record AddServiceRequest
 {

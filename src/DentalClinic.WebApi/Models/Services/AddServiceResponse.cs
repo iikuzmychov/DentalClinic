@@ -1,4 +1,4 @@
-﻿namespace DentalClinic.WebApi.Models.Responses;
+﻿namespace DentalClinic.WebApi.Models.Services;
 
 public sealed record AddServiceResponse
 {

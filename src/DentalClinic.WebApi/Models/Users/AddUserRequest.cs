@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Enums;
 
-namespace DentalClinic.WebApi.Models.Requests;
+namespace DentalClinic.WebApi.Models.Users;
 
 public sealed record AddUserRequest
 {

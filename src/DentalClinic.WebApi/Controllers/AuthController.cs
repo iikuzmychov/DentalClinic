@@ -1,6 +1,5 @@
 ﻿using DentalClinic.Infrastructure;
-using DentalClinic.WebApi.Models.Requests;
-using DentalClinic.WebApi.Models.Responses;
+using DentalClinic.WebApi.Models.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;

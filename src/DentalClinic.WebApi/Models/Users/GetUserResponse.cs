@@ -1,8 +1,8 @@
 ﻿using DentalClinic.Domain.Enums;
 
-namespace DentalClinic.WebApi.Models.Responses;
+namespace DentalClinic.WebApi.Models.Users;
 
-public sealed record ListUsersResponseItem
+public sealed record GetUserResponse
 {
     public required Guid Id { get; init; }
     public required string FirstName { get; init; }

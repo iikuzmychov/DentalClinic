@@ -6,6 +6,7 @@ using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
 using DentalClinic.WebApi.Models.Requests;
 using DentalClinic.WebApi.Models.Responses;
+using DentalClinic.WebApi.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
