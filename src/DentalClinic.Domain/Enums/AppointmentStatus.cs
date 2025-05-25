@@ -5,7 +5,7 @@ namespace DentalClinic.Domain.Enums;
 [JsonConverter(typeof(JsonStringEnumConverter<AppointmentStatus>))]
 public enum AppointmentStatus
 {
-    Pending,
+    Scheduled,
     Cancelled,
     Completed,
     Paid

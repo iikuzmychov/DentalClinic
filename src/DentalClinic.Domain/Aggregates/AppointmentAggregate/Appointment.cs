@@ -20,7 +20,7 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
 
     public Patient Patient { get; private set; }
     public User Dentist { get; private set; }
-    public AppointmentStatus Status { get; private set; } = AppointmentStatus.Pending;
+    public AppointmentStatus Status { get; private set; } = AppointmentStatus.Scheduled;
     public DateTime StartTime { get; private set; }
     public TimeSpan Duration { get; private set; }
     
@@ -73,9 +73,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
             throw new ArgumentException($"Dentist must have the role of {Role.Dentist}.", nameof(dentist));
         }
 
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can have their dentist changed.");
+            throw new InvalidOperationException("Only scheduled appointments can have their dentist changed.");
         }
 
         Dentist = dentist;
@@ -85,9 +85,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
     {
         ArgumentNullException.ThrowIfNull(patient, nameof(patient));
 
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can have their patient changed.");
+            throw new InvalidOperationException("Only scheduled appointments can have their patient changed.");
         }
 
         Patient = patient;
@@ -100,9 +100,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
             throw new ArgumentException($"Date and time must be in UTC.", nameof(startTime));
         }
 
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can have their date and time changed.");
+            throw new InvalidOperationException("Only scheduled appointments can have their date and time changed.");
         }
 
         StartTime = startTime;
@@ -110,9 +110,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
 
     public void ChangeDuration(TimeSpan duration)
     {
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can have their duration changed.");
+            throw new InvalidOperationException("Only scheduled appointments can have their duration changed.");
         }
 
         Duration = duration;
@@ -120,9 +120,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
 
     public void Cancel()
     {
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can be cancelled.");
+            throw new InvalidOperationException("Only scheduled appointments can be cancelled.");
         }
 
         Status = AppointmentStatus.Cancelled;
@@ -142,9 +142,9 @@ public sealed class Appointment : IIdentifiable<GuidEntityId<Appointment>>
             throw new ArgumentException("Provided services cannot contain null values.", nameof(providedServices));
         }
 
-        if (Status != AppointmentStatus.Pending)
+        if (Status != AppointmentStatus.Scheduled)
         {
-            throw new InvalidOperationException("Only pending appointments can be complited.");
+            throw new InvalidOperationException("Only scheduled appointments can be complited.");
         }
 
         _providedServices.AddRange(providedServices);

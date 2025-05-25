@@ -250,7 +250,7 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
             return TypedResults.NotFound();
         }
 
-        if (appointmentToCancel.Status is not AppointmentStatus.Pending)
+        if (appointmentToCancel.Status is not AppointmentStatus.Scheduled)
         {
             return TypedResults.Conflict();
         }
@@ -282,7 +282,7 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
             return TypedResults.NotFound();
         }
 
-        if (appointmentToComplete.Status is not AppointmentStatus.Pending)
+        if (appointmentToComplete.Status is not AppointmentStatus.Scheduled)
         {
             return TypedResults.Conflict();
         }
