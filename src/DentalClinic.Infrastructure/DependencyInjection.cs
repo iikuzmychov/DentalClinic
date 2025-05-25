@@ -9,10 +9,9 @@ namespace DentalClinic.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationInfrastructure(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddApplicationInfrastructure(this IServiceCollection services, string? connectionString)
     {
         ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(connectionString);
 
         services.AddDbContext<ApplicationDbContext>(options => options
             .ReplaceService<IValueConverterSelector, ApplicationValueConverterSelector>()

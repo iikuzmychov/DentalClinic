@@ -13,7 +13,7 @@ JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString(Constants.DefaultConnectionStringName)!;
+var connectionString = builder.Configuration.GetConnectionString(Constants.DefaultConnectionStringName);
 builder.Services.AddApplicationInfrastructure(connectionString);
 
 builder.Services
@@ -36,6 +36,11 @@ builder.Services.AddApplicationOpenApi();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+if (EnvironmentHelper.IsOpenApiGeneration())
+{
+    return;
+}
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler();
