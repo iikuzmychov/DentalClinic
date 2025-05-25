@@ -31,6 +31,7 @@ namespace DentalClinic.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     HashedPassword_Hash = table.Column<byte[]>(type: "varbinary(64)", maxLength: 64, nullable: false),
@@ -63,6 +64,11 @@ namespace DentalClinic.Infrastructure.Migrations
                 name: "IX_Users_LastName",
                 table: "Users",
                 column: "LastName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Surname",
+                table: "Users",
+                column: "Surname");
         }
 
         /// <inheritdoc />

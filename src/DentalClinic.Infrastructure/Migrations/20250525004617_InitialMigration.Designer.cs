@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalClinic.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250525002601_InitialMigration")]
+    [Migration("20250525004617_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -68,6 +68,9 @@ namespace DentalClinic.Infrastructure.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -76,6 +79,8 @@ namespace DentalClinic.Infrastructure.Migrations
                     b.HasIndex("FirstName");
 
                     b.HasIndex("LastName");
+
+                    b.HasIndex("Surname");
 
                     b.ToTable("Users");
                 });

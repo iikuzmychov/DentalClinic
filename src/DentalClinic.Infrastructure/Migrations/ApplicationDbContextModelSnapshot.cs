@@ -65,6 +65,9 @@ namespace DentalClinic.Infrastructure.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("Surname")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -73,6 +76,8 @@ namespace DentalClinic.Infrastructure.Migrations
                     b.HasIndex("FirstName");
 
                     b.HasIndex("LastName");
+
+                    b.HasIndex("Surname");
 
                     b.ToTable("Users");
                 });

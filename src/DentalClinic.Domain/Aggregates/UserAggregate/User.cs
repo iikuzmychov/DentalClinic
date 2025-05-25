@@ -28,6 +28,15 @@ public sealed class User : IIdentifiable<GuidEntityId<User>>
             field = value;
         }
     }
+    public string? Surname
+    {
+        get;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            field = value;
+        }
+    }
     public required Role Role
     {
         get;

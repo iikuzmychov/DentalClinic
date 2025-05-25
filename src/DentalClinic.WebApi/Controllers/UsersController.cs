@@ -27,7 +27,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         var users = await dbContext.Users
             .AsNoTracking()
             .OrderBy(user => user.FirstName)
-            .ThenBy(user => user.LastName)
+                .ThenBy(user => user.LastName)
+                    .ThenBy(user => user.Surname)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
@@ -43,6 +44,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
                     Id = user.Id.Value,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
+                    Surname = user.Surname,
                     Role = user.Role,
                     Email = user.Email.Value,
                     PhoneNumber = user.PhoneNumber
@@ -72,6 +74,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
             Id = user.Id.Value,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            Surname = user.Surname,
             Role = user.Role,
             Email = user.Email.Value,
             PhoneNumber = user.PhoneNumber
@@ -92,6 +95,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
+            Surname = request.Surname,
             Role = request.Role,
             Email = new Email(request.Email),
             PhoneNumber = request.PhoneNumber,
@@ -124,6 +128,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
 
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
+        user.Surname = request.Surname;
         user.PhoneNumber = request.PhoneNumber;
         
         dbContext.Users.Update(user);

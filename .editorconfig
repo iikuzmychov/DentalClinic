@@ -303,3 +303,5 @@ insert_final_newline = true
 dotnet_style_allow_multiple_blank_lines_experimental = true:silent
 dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
 dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_collection_initializer = false:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
