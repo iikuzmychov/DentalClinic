@@ -20,9 +20,9 @@ namespace DentalClinic.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HashedPassword_Hash = table.Column<byte[]>(type: "varbinary(64)", maxLength: 64, nullable: false),
-                    HashedPassword_Salt = table.Column<byte[]>(type: "varbinary(64)", maxLength: 64, nullable: false)
+                    HashedPassword_Salt = table.Column<byte[]>(type: "varbinary(64)", maxLength: 64, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -32,7 +32,8 @@ namespace DentalClinic.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
-                column: "Email");
+                column: "Email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_FirstName",

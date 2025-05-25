@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Types;
 
-namespace DentalClinic.Domain.Collections;
+namespace DentalClinic.Domain.Types.Collections;
 
 public class NullSafeOrderedCollection<T> : NullSafeCollection<OrderedItem<T>>
     where T : notnull

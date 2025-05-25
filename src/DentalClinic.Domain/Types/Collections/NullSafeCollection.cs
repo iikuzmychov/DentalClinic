@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace DentalClinic.Domain.Collections;
+namespace DentalClinic.Domain.Types.Collections;
 
 public class NullSafeCollection<T> : Collection<T>
     where T : notnull

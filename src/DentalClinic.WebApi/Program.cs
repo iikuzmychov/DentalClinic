@@ -1,24 +1,67 @@
 using DentalClinic.Infrastructure;
+using DentalClinic.WebApi;
+using DentalClinic.WebApi.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
+using System.IdentityModel.Tokens.Jwt;
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+var connectionString = builder.Configuration.GetConnectionString(Constants.DefaultConnectionStringName)!;
+builder.Services.AddApplicationInfrastructure(connectionString);
 
-builder.Services.AddOpenApi();
+builder.Services
+    .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
+        options.TokenValidationParameters.RoleClaimType = Constants.JwtRoleClaimName;
+    });
 
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddAuthorization();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new AuthorizeFilter());
+});
+
+builder.Services.AddApplicationOpenApi();
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+
+    app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+}
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
+            .WithDownloadButton(false);
+    });
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

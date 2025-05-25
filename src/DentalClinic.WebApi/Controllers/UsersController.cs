@@ -1,10 +1,12 @@
 ﻿using DentalClinic.Domain;
 using DentalClinic.Domain.Aggregates.UserAggregate;
+using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
 using DentalClinic.WebApi.Models.Requests;
 using DentalClinic.WebApi.Models.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +14,13 @@ using Microsoft.EntityFrameworkCore;
 namespace DentalClinic.WebApi.Controllers;
 
 [ApiController]
+[Authorize(Roles = nameof(Role.Admin))]
 [Route("api/users")]
 public sealed class UsersController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
     public async Task<ListUsersResponse> ListAsync(
-        [FromQuery] int page = Constants.DefaultPage,
+        [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
         CancellationToken cancellationToken = default)
     {
@@ -25,7 +28,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
             .AsNoTracking()
             .OrderBy(user => user.FirstName)
             .ThenBy(user => user.LastName)
-            .Skip(page * pageSize)
+            .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
@@ -76,10 +79,15 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPost]
-    public async Task<AddUserResponse> AddAsync(
+    public async Task<Results<Ok<AddUserResponse>, Conflict>> AddAsync(
         [FromBody] AddUserRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (await dbContext.Users.AnyAsync(user => user.Email == (object)request.Email, cancellationToken))
+        {
+            return TypedResults.Conflict();
+        }
+
         var user = new User
         {
             FirstName = request.FirstName,
@@ -93,10 +101,10 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         await dbContext.Users.AddAsync(user, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return new AddUserResponse
+        return TypedResults.Ok(new AddUserResponse
         {
             Id = user.Id.Value
-        };
+        });
     }
 
     [HttpPut("{id:guid}")]
@@ -119,6 +127,26 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         user.PhoneNumber = request.PhoneNumber;
         
         dbContext.Users.Update(user);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return TypedResults.Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<Results<Ok, NotFound>> DeleteAsync(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .GetByIdOrDefaultAsync(new GuidEntityId<User>(id), cancellationToken);
+
+        if (user is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        dbContext.Users.Remove(user);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();

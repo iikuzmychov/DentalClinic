@@ -50,21 +50,27 @@ public sealed class User : IIdentifiable<GuidEntityId<User>>
             field = value;
         }
     }
-    public required string PhoneNumber
-    {
-        get;
-        set
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value);
-            field = value;
-        }
-    }
     public required HashedPassword HashedPassword
     {
         get;
         set
         {
             ArgumentNullException.ThrowIfNull(value);
+            field = value;
+        }
+    }
+    public string? PhoneNumber
+    {
+        get;
+        set
+        {
+            if (value is null)
+            {
+                field = null;
+                return;
+            }
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
             field = value;
         }
     }

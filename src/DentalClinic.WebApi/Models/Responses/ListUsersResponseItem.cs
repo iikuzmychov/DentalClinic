@@ -9,5 +9,5 @@ public sealed record ListUsersResponseItem
     public required string LastName { get; init; }
     public required Role Role { get; init; }
     public required string Email { get; init; }
-    public required string PhoneNumber { get; init; }
+    public required string? PhoneNumber { get; init; }
 }
