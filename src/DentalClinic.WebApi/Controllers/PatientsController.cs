@@ -18,6 +18,7 @@ namespace DentalClinic.WebApi.Controllers;
 public sealed class PatientsController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<ListPatientsResponse>(StatusCodes.Status200OK)]
     public async Task<ListPatientsResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
@@ -55,6 +56,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType<GetPatientResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetPatientResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -81,6 +84,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPost]
+    [ProducesResponseType<AddPatientResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddPatientResponse>, Conflict>> AddAsync(
         [FromBody] AddPatientRequest request,
         CancellationToken cancellationToken = default)
@@ -110,6 +115,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdatePatientRequest request,
@@ -138,6 +145,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)

@@ -17,6 +17,7 @@ namespace DentalClinic.WebApi.Controllers;
 public sealed class ServicesController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<ListServicesResponse>(StatusCodes.Status200OK)]
     public async Task<ListServicesResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
@@ -48,6 +49,8 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType<GetServiceResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetServiceResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -70,6 +73,8 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPost]
+    [ProducesResponseType<AddServiceResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddServiceResponse>, Conflict>> AddAsync(
         [FromBody] AddServiceRequest request,
         CancellationToken cancellationToken = default)
@@ -95,6 +100,9 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok, NotFound, Conflict>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdateServiceRequest request,
@@ -128,6 +136,8 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)

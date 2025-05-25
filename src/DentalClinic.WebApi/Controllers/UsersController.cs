@@ -18,6 +18,8 @@ namespace DentalClinic.WebApi.Controllers;
 public sealed class UsersController(ApplicationDbContext dbContext) : ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType<ListUsersResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ListUsersResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
@@ -55,6 +57,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType<GetUserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetUserResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -81,6 +85,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPost]
+    [ProducesResponseType<AddUserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<Conflict>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddUserResponse>, Conflict>> AddAsync(
         [FromBody] AddUserRequest request,
         CancellationToken cancellationToken = default)
@@ -111,6 +117,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdateUserRequest request,
@@ -137,6 +145,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
