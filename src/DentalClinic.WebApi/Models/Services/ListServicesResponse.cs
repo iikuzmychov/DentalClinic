@@ -1,6 +1,4 @@
-﻿using DentalClinic.WebApi.Models.Services;
-
-namespace DentalClinic.WebApi.Models.Responses;
+﻿namespace DentalClinic.WebApi.Models.Services;
 
 public sealed record ListServicesResponse
 {

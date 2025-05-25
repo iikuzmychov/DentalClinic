@@ -1,10 +1,8 @@
-﻿using DentalClinic.Domain;
-using DentalClinic.Domain.Aggregates.ServiceAggregate;
+﻿using DentalClinic.Domain.Aggregates.ServiceAggregate;
 using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
-using DentalClinic.WebApi.Models.Responses;
 using DentalClinic.WebApi.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;

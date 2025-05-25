@@ -12,6 +12,23 @@ namespace DentalClinic.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Services",
                 columns: table => new
                 {
@@ -44,6 +61,28 @@ namespace DentalClinic.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Patients_Email",
+                table: "Patients",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_FirstName",
+                table: "Patients",
+                column: "FirstName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_LastName",
+                table: "Patients",
+                column: "LastName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_Surname",
+                table: "Patients",
+                column: "Surname");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Services_Name",
                 table: "Services",
                 column: "Name",
@@ -74,6 +113,9 @@ namespace DentalClinic.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Patients");
+
             migrationBuilder.DropTable(
                 name: "Services");
 

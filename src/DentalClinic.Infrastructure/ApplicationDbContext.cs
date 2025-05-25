@@ -1,4 +1,5 @@
-﻿using DentalClinic.Domain.Aggregates.ServiceAggregate;
+﻿using DentalClinic.Domain.Aggregates.PatientAggregate;
+using DentalClinic.Domain.Aggregates.ServiceAggregate;
 using DentalClinic.Domain.Aggregates.UserAggregate;
 using DentalClinic.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Service> Services => Set<Service>();
+    public DbSet<Patient> Patients => Set<Patient>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

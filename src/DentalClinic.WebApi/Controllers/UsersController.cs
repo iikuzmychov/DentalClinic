@@ -4,8 +4,6 @@ using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
-using DentalClinic.WebApi.Models.Requests;
-using DentalClinic.WebApi.Models.Responses;
 using DentalClinic.WebApi.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -27,8 +25,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     {
         var users = await dbContext.Users
             .AsNoTracking()
-            .OrderBy(user => user.FirstName)
-                .ThenBy(user => user.LastName)
+            .OrderBy(user => user.LastName)
+                .ThenBy(user => user.FirstName)
                     .ThenBy(user => user.Surname)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
