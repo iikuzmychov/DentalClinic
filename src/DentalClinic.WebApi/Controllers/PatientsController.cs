@@ -42,8 +42,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
                 .Select(patient => new ListPatientsResponseItem
                 {
                     Id = patient.Id.Value,
-                    FirstName = patient.FirstName,
                     LastName = patient.LastName,
+                    FirstName = patient.FirstName,
                     Surname = patient.Surname,
                     Email = patient.Email?.Value,
                     PhoneNumber = patient.PhoneNumber,
@@ -57,7 +57,7 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType<GetPatientResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetPatientResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -74,8 +74,8 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
         return TypedResults.Ok(new GetPatientResponse
         {
             Id = patient.Id.Value,
-            FirstName = patient.FirstName,
             LastName = patient.LastName,
+            FirstName = patient.FirstName,
             Surname = patient.Surname,
             Email = patient.Email?.Value,
             PhoneNumber = patient.PhoneNumber,
@@ -85,20 +85,24 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
 
     [HttpPost]
     [ProducesResponseType<AddPatientResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddPatientResponse>, Conflict>> AddAsync(
         [FromBody] AddPatientRequest request,
         CancellationToken cancellationToken = default)
     {
-        if (await dbContext.Patients.AnyAsync(patient => patient.Email == (object?)request.Email, cancellationToken))
+        var isEmailOccupied =
+            request.Email is not null &&
+            await dbContext.Patients.AnyAsync(patient => patient.Email == (object?)request.Email, cancellationToken);
+
+        if (isEmailOccupied)
         {
             return TypedResults.Conflict();
         }
 
         var patient = new Patient
         {
-            FirstName = request.FirstName,
             LastName = request.LastName,
+            FirstName = request.FirstName,
             Surname = request.Surname,
             Email = request.Email is null ? null : new Email(request.Email),
             PhoneNumber = request.PhoneNumber,
@@ -116,29 +120,41 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
 
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<Results<Ok, NotFound>> UpdateAsync(
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<Results<Ok, NotFound, Conflict>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdatePatientRequest request,
         CancellationToken cancellationToken = default)
     {
-        var patient = await dbContext.Patients
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Patient>(id), cancellationToken);
+        var patientToUpdate = await dbContext.Patients.GetByIdOrDefaultAsync(
+            new GuidEntityId<Patient>(id),
+            cancellationToken);
 
-        if (patient is null)
+        if (patientToUpdate is null)
         {
             return TypedResults.NotFound();
         }
 
-        patient.FirstName = request.FirstName;
-        patient.LastName = request.LastName;
-        patient.Surname = request.Surname;
-        patient.Email = request.Email is null ? null : new Email(request.Email);
-        patient.PhoneNumber = request.PhoneNumber;
-        patient.Notes = request.Notes;
+        var isEmailOccupied =
+            request.Email is not null &&
+            await dbContext.Patients
+                .Where(patient => patient.Id != patientToUpdate.Id)
+                .AnyAsync(patient => patient.Email == (object?)request.Email, cancellationToken);
+
+        if (isEmailOccupied)
+        {
+            return TypedResults.Conflict();
+        }
+
+        patientToUpdate.LastName = request.LastName;
+        patientToUpdate.FirstName = request.FirstName;
+        patientToUpdate.Surname = request.Surname;
+        patientToUpdate.Email = request.Email is null ? null : new Email(request.Email);
+        patientToUpdate.PhoneNumber = request.PhoneNumber;
+        patientToUpdate.Notes = request.Notes;
         
-        dbContext.Patients.Update(patient);
+        dbContext.Patients.Update(patientToUpdate);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();
@@ -146,21 +162,21 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
 
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
-        var patient = await dbContext.Patients
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Patient>(id), cancellationToken);
+        var patientToDelete = await dbContext.Patients.GetByIdOrDefaultAsync(
+            new GuidEntityId<Patient>(id),
+            cancellationToken);
 
-        if (patient is null)
+        if (patientToDelete is null)
         {
             return TypedResults.NotFound();
         }
 
-        dbContext.Patients.Remove(patient);
+        dbContext.Patients.Remove(patientToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();

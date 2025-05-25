@@ -19,7 +19,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
 {
     [HttpGet]
     [ProducesResponseType<ListUsersResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public async Task<ListUsersResponse> ListAsync(
         [FromQuery] int pageIndex = Constants.DefaultPageIndex,
         [FromQuery] int pageSize = Constants.DefaultPageSize,
@@ -43,8 +43,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
                 .Select(user => new ListUsersResponseItem
                 {
                     Id = user.Id.Value,
-                    FirstName = user.FirstName,
                     LastName = user.LastName,
+                    FirstName = user.FirstName,
                     Surname = user.Surname,
                     Role = user.Role,
                     Email = user.Email.Value,
@@ -58,7 +58,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType<GetUserResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetUserResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -75,8 +75,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         return TypedResults.Ok(new GetUserResponse
         {
             Id = user.Id.Value,
-            FirstName = user.FirstName,
             LastName = user.LastName,
+            FirstName = user.FirstName,
             Surname = user.Surname,
             Role = user.Role,
             Email = user.Email.Value,
@@ -98,8 +98,8 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
 
         var user = new User
         {
-            FirstName = request.FirstName,
             LastName = request.LastName,
+            FirstName = request.FirstName,
             Surname = request.Surname,
             Role = request.Role,
             Email = new Email(request.Email),
@@ -124,17 +124,17 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var user = await dbContext.Users
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<User>(id), cancellationToken);
+        var user = await dbContext.Users.GetByIdOrDefaultAsync(
+            new GuidEntityId<User>(id),
+            cancellationToken);
 
         if (user is null)
         {
             return TypedResults.NotFound();
         }
 
-        user.FirstName = request.FirstName;
         user.LastName = request.LastName;
+        user.FirstName = request.FirstName;
         user.Surname = request.Surname;
         user.PhoneNumber = request.PhoneNumber;
         
@@ -146,21 +146,21 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
 
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
-        var user = await dbContext.Users
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<User>(id), cancellationToken);
+        var userToDelete = await dbContext.Users.GetByIdOrDefaultAsync(
+            new GuidEntityId<User>(id),
+            cancellationToken);
 
-        if (user is null)
+        if (userToDelete is null)
         {
             return TypedResults.NotFound();
         }
 
-        dbContext.Users.Remove(user);
+        dbContext.Users.Remove(userToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();

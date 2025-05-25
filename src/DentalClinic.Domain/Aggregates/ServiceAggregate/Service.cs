@@ -7,7 +7,7 @@ namespace DentalClinic.Domain.Aggregates.ServiceAggregate;
 public sealed class Service : IIdentifiable<GuidEntityId<Service>>
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public GuidEntityId<Service> Id { get; set; } = GuidEntityId<Service>.New();
+    public GuidEntityId<Service> Id { get; init; } = GuidEntityId<Service>.New();
 
     public required string Name
     {

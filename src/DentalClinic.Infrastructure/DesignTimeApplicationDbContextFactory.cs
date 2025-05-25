@@ -9,7 +9,7 @@ internal sealed class DesignTimeApplicationDbContextFactory : IDesignTimeDbConte
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseSqlServer()
+            .UseNpgsql()
             .ReplaceService<IValueConverterSelector, ApplicationValueConverterSelector>()
             .Options;
 

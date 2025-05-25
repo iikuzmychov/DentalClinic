@@ -1,6 +1,6 @@
 ﻿namespace DentalClinic.Domain.Aggregates.ServiceAggregate;
 
-public sealed partial record Price
+public sealed record Price
 {
     public decimal Value { get; }
 

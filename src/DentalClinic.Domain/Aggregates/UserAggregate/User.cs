@@ -8,7 +8,7 @@ namespace DentalClinic.Domain.Aggregates.UserAggregate;
 public sealed class User : IIdentifiable<GuidEntityId<User>>
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public GuidEntityId<User> Id { get; set; } = GuidEntityId<User>.New();
+    public GuidEntityId<User> Id { get; init; } = GuidEntityId<User>.New();
 
     public required string FirstName
     {

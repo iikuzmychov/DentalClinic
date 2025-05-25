@@ -50,7 +50,7 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType<GetServiceResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok<GetServiceResponse>, NotFound>> GetAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
@@ -74,7 +74,7 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
 
     [HttpPost]
     [ProducesResponseType<AddServiceResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddServiceResponse>, Conflict>> AddAsync(
         [FromBody] AddServiceRequest request,
         CancellationToken cancellationToken = default)
@@ -101,35 +101,35 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
 
     [HttpPut("{id:guid}")]
     [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok, NotFound, Conflict>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdateServiceRequest request,
         CancellationToken cancellationToken = default)
     {
-        var service = await dbContext.Services
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Service>(id), cancellationToken);
+        var serviceToUpdate = await dbContext.Services.GetByIdOrDefaultAsync(
+            new GuidEntityId<Service>(id),
+            cancellationToken);
 
-        if (service is null)
+        if (serviceToUpdate is null)
         {
             return TypedResults.NotFound();
         }
 
-        var isNameOccupied = await dbContext.Services.AnyAsync(
-            serice => serice.Name == request.Name && serice.Id != service.Id,
-            cancellationToken);
+        var isNameOccupied = await dbContext.Services
+            .Where(service => service.Id != serviceToUpdate.Id)
+            .AnyAsync(serice => serice.Name == request.Name, cancellationToken);
 
         if (isNameOccupied)
         {
             return TypedResults.Conflict();
         }
 
-        service.Name = request.Name;
-        service.Price = new Price(request.Price);
+        serviceToUpdate.Name = request.Name;
+        serviceToUpdate.Price = new Price(request.Price);
         
-        dbContext.Services.Update(service);
+        dbContext.Services.Update(serviceToUpdate);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();
@@ -137,21 +137,21 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
 
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<Ok, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
-        var service = await dbContext.Services
-            .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Service>(id), cancellationToken);
+        var serviceToDelete = await dbContext.Services.GetByIdOrDefaultAsync(
+            new GuidEntityId<Service>(id),
+            cancellationToken);
 
-        if (service is null)
+        if (serviceToDelete is null)
         {
             return TypedResults.NotFound();
         }
 
-        dbContext.Services.Remove(service);
+        dbContext.Services.Remove(serviceToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return TypedResults.Ok();

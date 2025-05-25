@@ -19,7 +19,7 @@ public sealed class AuthController(ApplicationDbContext dbContext) : ControllerB
 {
     [HttpPost("login")]
     [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status401Unauthorized)]
     public async Task<Results<Ok<LoginResponse>, UnauthorizedHttpResult>> LoginAsync(
         [FromBody] LoginRequest request,
         [FromServices] IOptionsMonitor<JwtBearerOptions> jwtBearerOptionsMonitor)

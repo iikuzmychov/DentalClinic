@@ -1,32 +1,26 @@
 #!/bin/bash
 
 CONTAINER_NAME=dental-clinic-db
-SA_PASSWORD="yourStrong(!)Password"
+POSTGRES_PASSWORD="yourStrong(!)Password"
 DB_NAME="DentalClinic"
+POSTGRES_USER="postgres"
 
 docker run --name $CONTAINER_NAME \
-    -e "ACCEPT_EULA=Y" \
-    -e "MSSQL_SA_PASSWORD=$SA_PASSWORD" \
-    -p 1433:1433 \
-    -d mcr.microsoft.com/mssql/server:2022-latest
+    -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+    -e POSTGRES_DB="$DB_NAME" \
+    -p 5432:5432 \
+    -d postgres:16
 
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo -n "Waiting for SQL Server..."
+echo -n "Waiting for PostgreSQL..."
 
-until docker exec $CONTAINER_NAME //opt/mssql-tools18/bin/sqlcmd \
-    -S 127.0.0.1 -U sa -P "$SA_PASSWORD" -Q "SELECT 1" -C &> /dev/null
+until docker exec $CONTAINER_NAME pg_isready -U $POSTGRES_USER &> /dev/null
 do
     echo -n "."
     sleep 1
 done
 
-echo -e "\nSQL Server is ready."
-
-docker exec -i $CONTAINER_NAME //opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$SA_PASSWORD" -C \
-    -Q "IF DB_ID('$DB_NAME') IS NULL CREATE DATABASE [$DB_NAME];"
-
-echo "Database '$DB_NAME' was successfully created."
+echo -e "\nPostgreSQL is ready."

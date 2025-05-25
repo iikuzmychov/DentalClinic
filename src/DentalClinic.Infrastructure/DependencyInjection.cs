@@ -16,7 +16,8 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options => options
             .ReplaceService<IValueConverterSelector, ApplicationValueConverterSelector>()
-            .UseSqlServer(connectionString)
+            .UseNpgsql(connectionString)
+            .UseProjectables()
             .UseSeeding((dbContext, _) =>
                 SeedDatabaseAsync((ApplicationDbContext)dbContext, CancellationToken.None).Wait())
             .UseAsyncSeeding((dbContext, _, cancellationToken) =>

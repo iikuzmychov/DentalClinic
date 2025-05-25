@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{176D9A91-E1DE-4EAB-B18E-77644D33711F}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\add-migration.sh = scripts\add-migration.sh
+		scripts\add-squash-migration.sh = scripts\add-squash-migration.sh
 		scripts\launch-databse.sh = scripts\launch-databse.sh
 	EndProjectSection
 EndProject
