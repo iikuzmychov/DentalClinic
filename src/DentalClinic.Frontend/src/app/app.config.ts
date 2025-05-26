@@ -50,10 +50,6 @@ export const appConfig: ApplicationConfig = {
                         id   : 'en',
                         label: 'English',
                     },
-                    {
-                        id   : 'tr',
-                        label: 'Turkish',
-                    },
                 ],
                 defaultLang         : 'en',
                 fallbackLang        : 'en',
@@ -85,7 +81,7 @@ export const appConfig: ApplicationConfig = {
                 services: mockApiServices,
             },
             fuse   : {
-                layout : 'classy',
+                layout : 'modern',
                 scheme : 'light',
                 screens: {
                     sm: '600px',
