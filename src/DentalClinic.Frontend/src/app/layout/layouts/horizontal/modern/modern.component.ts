@@ -60,6 +60,14 @@ export class ModernLayoutComponent implements OnInit, OnDestroy
      */
     ngOnInit(): void
     {
+        // Initialize with empty navigation since we removed API calls
+        this.navigation = {
+            default: [],
+            horizontal: [],
+            compact: [],
+            futuristic: []
+        };
+
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
