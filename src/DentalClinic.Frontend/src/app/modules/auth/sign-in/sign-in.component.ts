@@ -54,9 +54,8 @@ export class AuthSignInComponent implements OnInit
     {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email     : ['hughes.brian@company.com', [Validators.required, Validators.email]],
-            password  : ['admin', Validators.required],
-            rememberMe: [''],
+            email     : ['', [Validators.required, Validators.email]],
+            password  : ['', Validators.required],
         });
     }
 
@@ -107,7 +106,7 @@ export class AuthSignInComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Wrong email or password',
+                        message: 'Помилковий email або пароль',
                     };
 
                     // Show the alert

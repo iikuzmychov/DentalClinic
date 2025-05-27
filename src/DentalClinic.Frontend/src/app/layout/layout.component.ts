@@ -1,3 +1,4 @@
+import { CommonModule, NgIf } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -6,6 +7,8 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FusePlatformService } from '@fuse/services/platform';
 import { FUSE_VERSION } from '@fuse/version';
 import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
+import { ModernLayoutComponent } from './layouts/horizontal/modern/modern.component';
+import { EmptyLayoutComponent } from './layouts/empty/empty.component';
 
 @Component({
     selector     : 'layout',
@@ -13,6 +16,7 @@ import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
     styleUrls    : ['./layout.component.scss'],
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
+    imports      : [NgIf, EmptyLayoutComponent, CommonModule, ModernLayoutComponent],
 })
 export class LayoutComponent implements OnInit, OnDestroy
 {
