@@ -42,9 +42,17 @@ public sealed class AuthController(ApplicationDbContext dbContext) : ControllerB
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email.Value),
+            new(JwtRegisteredClaimNames.GivenName, user.FirstName),
+            new(JwtRegisteredClaimNames.FamilyName, user.LastName),
             new(JwtRegisteredClaimNames.Iss, jwtBearerOptions.TokenValidationParameters.ValidIssuer),
             new(Constants.JwtRoleClaimName, user.Role.ToString())
         };
+
+        if (!string.IsNullOrWhiteSpace(user.Surname))
+        {
+            claims.Add(new Claim(JwtRegisteredClaimNames.MiddleName, user.Surname));
+        }
 
         foreach (var validAudience in jwtBearerOptions.TokenValidationParameters.ValidAudiences)
         {
