@@ -76,25 +76,7 @@ export class UserComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Update the user status
-     *
-     * @param status
-     */
-    updateUserStatus(status: string): void
-    {
-        // Return if user is not available
-        if ( !this.user )
-        {
-            return;
-        }
 
-        // Update the user
-        this._userService.update({
-            ...this.user,
-            status,
-        }).subscribe();
-    }
 
     /**
      * Sign out
