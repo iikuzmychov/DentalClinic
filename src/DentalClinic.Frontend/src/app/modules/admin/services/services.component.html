@@ -1,20 +1,119 @@
 <div class="flex flex-col flex-auto min-w-0">
 
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
-        <div class="flex-1 min-w-0">
-            <!-- Title -->
-            <div class="mt-2">
-                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-                    Послуги
-                </h2>
-            </div>
-        </div>
+    <!-- Compact Header -->
+    <div class="flex flex-0 items-center px-6 sm:px-10 py-4 border-b bg-card dark:bg-transparent">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Послуги
+        </h1>
     </div>
 
     <!-- Main -->
-    <div class="flex-auto p-6 sm:p-10">
-        <!-- Пустая область для будущего контента -->
+    <div class="flex flex-auto p-6 sm:p-10">
+        <div class="flex flex-col flex-auto w-full">
+
+            <!-- Search and Add button -->
+            <div class="flex items-center justify-between mb-4">
+                <mat-form-field class="w-full max-w-md" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Пошук послуг</mat-label>
+                    <input matInput 
+                           [(ngModel)]="searchTerm" 
+                           (input)="onSearchInput()"
+                           placeholder="Введіть назву послуги">
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
+                
+                <button
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="addService()"
+                    class="ml-4">
+                    <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                    <span class="ml-2">Додати послугу</span>
+                </button>
+            </div>
+
+            <!-- Initial loading -->
+            <div *ngIf="isLoading && isInitialLoad" class="flex justify-center py-8">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+
+            <!-- Services table -->
+            <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative h-96" 
+                 [class.opacity-60]="isLoading">
+                
+                <!-- Loading overlay -->
+                <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
+                    <mat-spinner diameter="40"></mat-spinner>
+                </div>
+                
+                <!-- Table Container -->
+                <div class="flex flex-col flex-1 min-h-0">
+                    <!-- Table Header -->
+                    <div class="flex-none bg-gray-50 border-b">
+                        <div class="flex">
+                            <div class="flex-1 px-6 py-3">
+                                <span class="font-semibold text-secondary">Назва</span>
+                            </div>
+                            <div class="w-64 px-6 py-3">
+                                <span class="font-semibold text-secondary">Ціна</span>
+                            </div>
+                            <div class="w-32 px-6 py-3">
+                                <span class="font-semibold text-secondary">Дії</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scrollable Table Body -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div *ngFor="let service of services" class="flex border-b hover:bg-gray-50">
+                            <div class="flex-1 px-6 py-3 flex items-center">
+                                <span class="font-medium">{{ service.name || 'Без назви' }}</span>
+                            </div>
+                            <div class="w-64 px-6 py-3 flex items-center">
+                                <span class="font-medium text-green-600">
+                                    {{ service.price ? (service.price + ' грн') : 'Не вказано' }}
+                                </span>
+                            </div>
+                            <div class="w-32 px-6 py-3 flex items-center">
+                                <div class="flex items-center space-x-1">
+                                    <button
+                                        mat-icon-button
+                                        [matTooltip]="'Редагувати'"
+                                        [disabled]="isLoading"
+                                        (click)="editService(service)">
+                                        <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                    </button>
+                                    <button
+                                        mat-icon-button
+                                        [matTooltip]="'Видалити'"
+                                        [color]="'warn'"
+                                        [disabled]="isLoading"
+                                        (click)="deleteService(service)">
+                                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty state -->
+                        <div *ngIf="services.length === 0 && !isLoading" class="flex flex-col items-center justify-center h-full min-h-64">
+                            <mat-icon [svgIcon]="'heroicons_outline:document-text'" class="text-gray-400 w-16 h-16 mb-4"></mat-icon>
+                            <p class="text-gray-500 text-lg font-medium">Послуги не знайдено</p>
+                            <p class="text-gray-400 mt-2 text-center">
+                                {{ lastCompletedSearchTerm && lastCompletedSearchTerm.trim() ? 'Спробуйте змінити критерії пошуку' : 'Список послуг порожній' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer with count -->
+                <div *ngIf="services.length > 0" class="flex-none border-t px-3 py-1 bg-gray-50">
+                    <div class="text-secondary text-sm">
+                        Всього: {{ totalCount }} записів
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
