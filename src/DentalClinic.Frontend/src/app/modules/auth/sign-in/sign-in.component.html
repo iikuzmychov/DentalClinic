@@ -40,7 +40,9 @@
             <form
                 class="mt-8"
                 [formGroup]="signInForm"
-                #signInNgForm="ngForm">
+                #signInNgForm="ngForm"
+                (ngSubmit)="onSubmit($event)"
+                novalidate>
 
                 <!-- Email field -->
                 <mat-form-field class="w-full">
@@ -48,7 +50,8 @@
                     <input
                         id="email"
                         matInput
-                        [formControlName]="'email'">
+                        [formControlName]="'email'"
+                        (keydown.enter)="onEnterKey($event)">
                     <mat-error *ngIf="signInForm.get('email').hasError('required')">
                         Необхідно вказати email
                     </mat-error>
@@ -65,7 +68,8 @@
                         matInput
                         type="password"
                         [formControlName]="'password'"
-                        #passwordField>
+                        #passwordField
+                        (keydown.enter)="onEnterKey($event)">
                     <button
                         mat-icon-button
                         type="button"
@@ -103,6 +107,7 @@
                 <button
                     class="fuse-mat-button-large w-full mt-6"
                     mat-flat-button
+                    type="button"
                     [color]="'primary'"
                     [disabled]="signInForm.disabled"
                     (click)="signIn()">

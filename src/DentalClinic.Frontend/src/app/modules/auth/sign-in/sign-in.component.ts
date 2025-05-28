@@ -64,13 +64,45 @@ export class AuthSignInComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
+     * Handle form submit
+     */
+    onSubmit(event: Event): void
+    {
+        console.log('onSubmit called, preventing default');
+        event.preventDefault();
+        event.stopPropagation();
+        this.signIn();
+    }
+
+    /**
+     * Handle Enter key press
+     */
+    onEnterKey(event: KeyboardEvent): void
+    {
+        console.log('onEnterKey called, preventing default');
+        event.preventDefault();
+        event.stopPropagation();
+        this.signIn();
+    }
+
+    /**
      * Sign in
      */
     signIn(): void
     {
+        console.log('signIn() called');
+        
         // Return if the form is invalid
         if ( this.signInForm.invalid )
         {
+            console.log('Form is invalid, returning');
+            return;
+        }
+
+        // Return if form is already disabled (request in progress)
+        if ( this.signInForm.disabled )
+        {
+            console.log('Form is disabled, returning');
             return;
         }
 
@@ -82,8 +114,8 @@ export class AuthSignInComponent implements OnInit
 
         // Sign in
         this._authService.signIn(this.signInForm.value)
-            .subscribe(
-                () =>
+            .subscribe({
+                next: () =>
                 {
                     console.log('Sign in successful');
                     // Set the redirect url.
@@ -95,25 +127,48 @@ export class AuthSignInComponent implements OnInit
 
                     // Navigate to the redirect url
                     this._router.navigateByUrl(redirectURL);
-
                 },
-                (response) =>
+                error: (response) =>
                 {
+                    console.log('Sign in error occurred:', response);
+                    console.log('Error status:', response?.status);
+                    console.log('Error message:', response?.message);
+                    console.log('Error error:', response?.error);
+                    
                     // Re-enable the form
                     this.signInForm.enable();
 
-                    // Reset the form
-                    this.signInNgForm.resetForm();
+                    // Determine error message based on status code
+                    let errorMessage = 'Помилковий email або пароль';
+                    
+                    if (response?.status === 401) {
+                        errorMessage = 'Невірний email або пароль';
+                    } else if (response?.status === 400) {
+                        errorMessage = 'Некоректні дані для входу';
+                    } else if (response?.status === 500) {
+                        errorMessage = 'Помилка сервера, cпробуйте пізніше';
+                    } else if (response?.status === 0) {
+                        errorMessage = 'Немає з\'єднання з сервером';
+                    } else if (response?.error?.message) {
+                        // If server provides a custom message
+                        errorMessage = response.error.message;
+                    } else if (response?.message && !response.message.includes('Http failure')) {
+                        // Only use response message if it's not a technical HTTP error
+                        errorMessage = response.message;
+                    }
 
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Помилковий email або пароль',
+                        message: errorMessage,
                     };
 
                     // Show the alert
                     this.showAlert = true;
-                },
-            );
+                    
+                    console.log('Alert set, showAlert:', this.showAlert);
+                    console.log('Alert message:', this.alert.message);
+                }
+            });
     }
 }
