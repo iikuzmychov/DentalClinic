@@ -6,7 +6,8 @@ import { AuthService } from 'app/core/auth/auth.service';
 export const provideAuth = (): Array<Provider | EnvironmentProviders> =>
 {
     return [
-        provideHttpClient(withInterceptors([authInterceptor])),
+        // Temporarily disable auth interceptor to avoid conflicts with Kiota JWT provider
+        provideHttpClient(/* withInterceptors([authInterceptor]) */),
         {
             provide : ENVIRONMENT_INITIALIZER,
             useValue: () => inject(AuthService),

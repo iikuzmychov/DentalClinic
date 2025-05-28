@@ -3,7 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { Router } from '@angular/router';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, throwError, from } from 'rxjs';
+import { ApiClientService } from 'app/core/api/api-client.service';
+import { LoginRequest, LoginResponse } from 'app/api/models';
 
 @Injectable({providedIn: 'root'})
 export class AuthService
@@ -12,6 +14,7 @@ export class AuthService
     private _httpClient = inject(HttpClient);
     private _userService = inject(UserService);
     private _router = inject(Router);
+    private _apiClient = inject(ApiClientService);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -35,7 +38,7 @@ export class AuthService
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Forgot password
+     * Forgot password - TODO: Use generated types when available
      *
      * @param email
      */
@@ -45,7 +48,7 @@ export class AuthService
     }
 
     /**
-     * Reset password
+     * Reset password - TODO: Use generated types when available
      *
      * @param password
      */
@@ -55,11 +58,11 @@ export class AuthService
     }
 
     /**
-     * Sign in
+     * Sign in using generated types and API client
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any>
+    signIn(credentials: { email: string; password: string }): Observable<LoginResponse>
     {
         // Throw error, if the user is already logged in
         if ( this._authenticated )
@@ -67,20 +70,28 @@ export class AuthService
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post('/api/auth/login', credentials).pipe(
-            switchMap((response: any) =>
+        // Create login request using generated type
+        const loginRequest: LoginRequest = {
+            email: credentials.email,
+            password: credentials.password
+        };
+
+        return from(this._apiClient.client.api.auth.login.post(loginRequest)).pipe(
+            switchMap((response: LoginResponse) =>
             {
                 console.log('Login response:', response);
                 
                 // Store the access token in the local storage
-                this.accessToken = response.token;
-                console.log('Stored token:', response.token);
+                if (response.token) {
+                    this.accessToken = response.token;
+                    console.log('Stored token:', response.token);
 
-                // Set the authenticated flag to true
-                this._authenticated = true;
+                    // Set the authenticated flag to true
+                    this._authenticated = true;
 
-                // Extract user data from token
-                this._setUserFromToken(response.token);
+                    // Extract user data from token
+                    this._setUserFromToken(response.token);
+                }
 
                 // Return a new observable with the response
                 return of(response);

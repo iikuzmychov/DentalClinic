@@ -12,13 +12,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from 'app/core/services/api.service';
+import { from } from 'rxjs';
+import { type ServicesRequestBuilderGetQueryParameters } from 'app/api/api/services';
+import { ApiClientService } from 'app/core/api/api-client.service';
 import { 
     ListServicesResponse, 
     ListServicesResponseItem, 
     AddServiceRequest, 
-    UpdateServiceRequest,
-    GetServiceResponse 
+    UpdateServiceRequest
 } from 'app/api/models';
 import { ServiceDialogComponent, ServiceDialogData } from './service-dialog/service-dialog.component';
 import { DeleteConfirmationDialogComponent, DeleteConfirmationData } from './delete-confirmation-dialog/delete-confirmation-dialog.component';
@@ -61,10 +62,10 @@ export class ServicesComponent implements OnInit
     private searchTimeout: any;
 
     /**
-     * Constructor
+     * Constructor - Using generated types and new API client
      */
     constructor(
-        private _apiService: ApiService,
+        private apiClient: ApiClientService,
         private _dialog: MatDialog,
         private _snackBar: MatSnackBar
     )
@@ -88,17 +89,22 @@ export class ServicesComponent implements OnInit
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Load services
+     * Load services using generated ServicesRequestBuilderGetQueryParameters
      */
     loadServices(): void
     {
         this.isLoading = true;
         
-        this._apiService.getServices({
-            name: this.searchTerm || undefined,
-            pageIndex: 0,
-            pageSize: 1000 // Load all services at once
-        }).subscribe({
+        // Using the exact same structure as generated ServicesRequestBuilder.get()
+        const requestConfiguration = {
+            queryParameters: {
+                name: this.searchTerm || undefined,
+                pageIndex: 0,
+                pageSize: 1000
+            } as ServicesRequestBuilderGetQueryParameters
+        };
+        
+        from(this.apiClient.client.api.services.get(requestConfiguration)).subscribe({
             next: (response: ListServicesResponse) => {
                 this.services = response?.items || [];
                 this.totalCount = response?.totalCount || 0;
@@ -184,7 +190,7 @@ export class ServicesComponent implements OnInit
     }
 
     /**
-     * Delete service
+     * Delete service using generated structure: api.services.byId(id).delete()
      */
     deleteService(service: ListServicesResponseItem): void
     {
@@ -201,7 +207,8 @@ export class ServicesComponent implements OnInit
         dialogRef.afterClosed().subscribe(result => {
             if (result && service.id) {
                 this.isLoading = true;
-                this._apiService.deleteService(service.id).subscribe({
+                // Using the same structure as generated api.services.byId(id).delete()
+                from(this.apiClient.client.api.services.byId(service.id).delete()).subscribe({
                     next: () => {
                         this._snackBar.open('Послугу видалено', 'OK', { duration: 3000 });
                         this.loadServices();
@@ -217,12 +224,13 @@ export class ServicesComponent implements OnInit
     }
 
     /**
-     * Create service
+     * Create service using generated structure: api.services.post(body)
      */
     private createService(serviceData: AddServiceRequest): void
     {
         this.isLoading = true;
-        this._apiService.createService(serviceData).subscribe({
+        // Using the same structure as generated api.services.post(body)
+        from(this.apiClient.client.api.services.post(serviceData)).subscribe({
             next: () => {
                 this._snackBar.open('Послугу створено', 'OK', { duration: 3000 });
                 this.loadServices();
@@ -236,12 +244,13 @@ export class ServicesComponent implements OnInit
     }
 
     /**
-     * Update service
+     * Update service using generated structure: api.services.byId(id).put(body)
      */
-    private updateService(serviceId: string, serviceData: UpdateServiceRequest): void
+    private updateService(serviceId: any, serviceData: UpdateServiceRequest): void
     {
         this.isLoading = true;
-        this._apiService.updateService(serviceId, serviceData).subscribe({
+        // Using the same structure as generated api.services.byId(id).put(body)
+        from(this.apiClient.client.api.services.byId(serviceId).put(serviceData)).subscribe({
             next: () => {
                 this._snackBar.open('Послугу оновлено', 'OK', { duration: 3000 });
                 this.loadServices();
