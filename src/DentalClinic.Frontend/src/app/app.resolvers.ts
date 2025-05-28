@@ -10,18 +10,18 @@ export const initialDataResolver = () =>
     const simpleNavigation = {
         default: [
             {
-                id: 'example',
-                title: 'Example',
+                id: 'services',
+                title: 'Послуги',
                 type: 'basic',
-                link: '/example'
+                link: '/services'
             }
         ],
         horizontal: [
             {
-                id: 'example',
-                title: 'Example',
+                id: 'services',
+                title: 'Послуги',
                 type: 'basic',
-                link: '/example'
+                link: '/services'
             }
         ],
         compact: [],
