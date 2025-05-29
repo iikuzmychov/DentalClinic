@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 namespace DentalClinic.WebApi.Controllers;
 
 [ApiController]
-[Authorize(Roles = nameof(Role.Admin))]
 [Route("api/services")]
 public sealed class ServicesController(ApplicationDbContext dbContext) : ControllerBase
 {

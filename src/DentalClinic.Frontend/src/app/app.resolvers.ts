@@ -20,6 +20,12 @@ export const initialDataResolver = () =>
                 title: 'Пацієнти',
                 type: 'basic',
                 link: '/patients'
+            },
+            {
+                id: 'users',
+                title: 'Користувачі',
+                type: 'basic',
+                link: '/users'
             }
         ],
         horizontal: [
@@ -34,6 +40,12 @@ export const initialDataResolver = () =>
                 title: 'Пацієнти',
                 type: 'basic',
                 link: '/patients'
+            },
+            {
+                id: 'users',
+                title: 'Користувачі',
+                type: 'basic',
+                link: '/users'
             }
         ],
         compact: [],

@@ -1,33 +1,54 @@
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { 
-    AddPatientRequest, 
-    UpdatePatientRequest, 
-    GetPatientResponse 
+    ListUsersResponseItem, 
+    AddUserRequest, 
+    UpdateUserRequest,
+    Role,
+    RoleObject
 } from 'app/api/models';
 
-export interface PatientDialogData {
+export interface UserDialogData {
     mode: 'add' | 'edit' | 'view';
-    patient?: GetPatientResponse;
+    user?: ListUsersResponseItem;
+}
+
+// Кастомный валидатор для пароля
+function passwordValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) {
+        return null; // required валидатор обработает пустое значение
+    }
+    
+    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])[A-Za-z0-9#?!@$%^&*-]+$/;
+    
+    if (!passwordRegex.test(value)) {
+        return { invalidPassword: true };
+    }
+    
+    return null;
 }
 
 @Component({
-    selector: 'app-patient-dialog',
+    selector: 'app-user-dialog',
     standalone: true,
     imports: [
         NgIf,
+        NgFor,
         ReactiveFormsModule,
         MatButtonModule,
         MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
-        MatIconModule
+        MatIconModule,
+        MatSelectModule
     ],
     styles: [`
         :host {
@@ -71,6 +92,10 @@ export interface PatientDialogData {
             cursor: default;
         }
         
+        .readonly-field .mat-mdc-select {
+            color: #757575;
+        }
+        
         @media (max-width: 900px) {
             .form-grid {
                 grid-template-columns: 1fr 1fr;
@@ -110,7 +135,7 @@ export interface PatientDialogData {
                         class="text-current"
                         [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                     <div class="text-lg font-medium">
-                        {{ currentMode === 'add' ? 'Додати пацієнта' : currentMode === 'edit' ? 'Редагування пацієнта' : 'Перегляд пацієнта' }}
+                        {{ currentMode === 'add' ? 'Додати користувача' : currentMode === 'edit' ? 'Редагування користувача' : 'Перегляд користувача' }}
                     </div>
                 </div>
                 <button
@@ -125,7 +150,7 @@ export interface PatientDialogData {
             <!-- Content -->
             <form
                 class="flex flex-col flex-1 px-6 py-6"
-                [formGroup]="patientForm"
+                [formGroup]="userForm"
                 (ngSubmit)="save()">
 
                 <div class="form-grid">
@@ -138,7 +163,7 @@ export interface PatientDialogData {
                             placeholder="Введіть прізвище"
                             [readonly]="isReadonly"
                             required>
-                        <mat-error *ngIf="patientForm.get('lastName')?.hasError('required')">
+                        <mat-error *ngIf="userForm.get('lastName')?.hasError('required')">
                             Прізвище є обов'язковим
                         </mat-error>
                     </mat-form-field>
@@ -152,7 +177,7 @@ export interface PatientDialogData {
                             placeholder="Введіть ім'я"
                             [readonly]="isReadonly"
                             required>
-                        <mat-error *ngIf="patientForm.get('firstName')?.hasError('required')">
+                        <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">
                             Ім'я є обов'язковим
                         </mat-error>
                     </mat-form-field>
@@ -177,8 +202,12 @@ export interface PatientDialogData {
                                 type="email"
                                 formControlName="email"
                                 [readonly]="isReadonly"
-                                placeholder="example@email.com">
-                            <mat-error *ngIf="patientForm.get('email')?.hasError('email')">
+                                placeholder="example@email.com"
+                                required>
+                            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+                                Email є обов'язковим
+                            </mat-error>
+                            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
                                 Введіть правильний email
                             </mat-error>
                         </mat-form-field>
@@ -195,16 +224,58 @@ export interface PatientDialogData {
                         </mat-form-field>
                     </div>
 
-                    <!-- Notes -->
+                    <!-- Role -->
                     <mat-form-field appearance="outline" class="full-width" [class.readonly-field]="isReadonly">
-                        <mat-label>Примітки</mat-label>
-                        <textarea
-                            matInput
-                            formControlName="notes"
-                            [readonly]="isReadonly"
-                            placeholder="Додаткова інформація про пацієнта"
-                            rows="4">
-                        </textarea>
+                        <mat-label>Роль</mat-label>
+                        <mat-select 
+                            formControlName="role"
+                            [disabled]="isReadonly || currentMode === 'edit'"
+                            required>
+                            <mat-option *ngFor="let roleOption of roleOptions" [value]="roleOption.value">
+                                {{ roleOption.label }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="userForm.get('role')?.hasError('required')">
+                            Роль є обов'язковою
+                        </mat-error>
+                    </mat-form-field>
+
+                    <!-- Password - only in add mode -->
+                    <mat-form-field 
+                        *ngIf="currentMode === 'add'" 
+                        appearance="outline" 
+                        class="full-width">
+                        <mat-label>Пароль</mat-label>
+                        <input 
+                            matInput 
+                            type="password"
+                            formControlName="password"
+                            placeholder="Введіть пароль"
+                            #passwordField
+                            required>
+                        <button 
+                            mat-icon-button 
+                            matSuffix 
+                            type="button"
+                            (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'">
+                            <mat-icon
+                                class="icon-size-5"
+                                *ngIf="passwordField.type === 'password'"
+                                [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                            <mat-icon
+                                class="icon-size-5"
+                                *ngIf="passwordField.type === 'text'"
+                                [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                        </button>
+                        <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+                            Пароль є обов'язковим
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+                            Пароль повинен містити щонайменше 8 символів
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('password')?.hasError('invalidPassword')">
+                            Пароль повинен містити: велику літеру, малу літеру, цифру та спеціальний символ
+                        </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -222,9 +293,9 @@ export interface PatientDialogData {
                         mat-flat-button
                         type="submit"
                         [color]="'primary'"
-                        [disabled]="patientForm.invalid"
+                        [disabled]="userForm.invalid"
                         class="px-8">
-                        {{ currentMode === 'add' ? 'Додати' : 'Зберегти' }}
+                        {{ currentMode === 'add' ? 'Створити' : 'Зберегти' }}
                     </button>
                     <button
                         *ngIf="currentMode === 'view'"
@@ -240,53 +311,72 @@ export interface PatientDialogData {
         </div>
     `
 })
-export class PatientDialogComponent implements OnInit {
-    patientForm: FormGroup;
+export class UserDialogComponent implements OnInit {
+    userForm: FormGroup;
     currentMode: 'add' | 'edit' | 'view';
-    originalData: any = null; // Store original data for cancellation
+    originalData: any = null;
     isReadonly: boolean = false;
+    
+    // Локализованные роли для селекта
+    roleOptions = [
+        { value: RoleObject.Admin, label: 'Адміністратор' },
+        { value: RoleObject.Dentist, label: 'Лікар' },
+        { value: RoleObject.Receptionist, label: 'Менеджер' }
+    ];
 
     constructor(
         private _formBuilder: FormBuilder,
-        private _dialogRef: MatDialogRef<PatientDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: PatientDialogData
+        private _dialogRef: MatDialogRef<UserDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: UserDialogData
     ) {
         this.currentMode = this.data.mode;
         this.isReadonly = this.currentMode === 'view';
-        this.patientForm = this._formBuilder.group({
+        
+        const formConfig: any = {
             firstName: ['', [Validators.required]],
             lastName: ['', [Validators.required]],
             surname: [''],
-            email: ['', [Validators.email]],
+            email: ['', [Validators.required, Validators.email]],
             phoneNumber: [''],
-            notes: ['']
-        });
+            role: ['', [Validators.required]]
+        };
+
+        // Добавляем пароль только в режиме добавления
+        if (this.currentMode === 'add') {
+            formConfig.password = ['', [Validators.required, Validators.minLength(8), passwordValidator]];
+        }
+
+        this.userForm = this._formBuilder.group(formConfig);
     }
 
     ngOnInit(): void {
         // If editing or viewing, populate form with existing data
-        if ((this.currentMode === 'edit' || this.currentMode === 'view') && this.data.patient) {
-            const patientData = {
-                firstName: this.data.patient.firstName,
-                lastName: this.data.patient.lastName,
-                surname: this.data.patient.surname,
-                email: this.data.patient.email,
-                phoneNumber: this.data.patient.phoneNumber,
-                notes: this.data.patient.notes
+        if ((this.currentMode === 'edit' || this.currentMode === 'view') && this.data.user) {
+            const userData = {
+                firstName: this.data.user.firstName,
+                lastName: this.data.user.lastName,
+                surname: this.data.user.surname,
+                email: this.data.user.email,
+                phoneNumber: this.data.user.phoneNumber,
+                role: this.data.user.role
             };
             
-            this.patientForm.patchValue(patientData);
+            this.userForm.patchValue(userData);
             // Store original data for potential cancellation
-            this.originalData = { ...patientData };
+            this.originalData = { ...userData };
         }
 
-        // Ensure readonly state is correctly set
+        // Set readonly state
         this.isReadonly = this.currentMode === 'view';
     }
 
     switchToEditMode(): void {
         this.currentMode = 'edit';
         this.isReadonly = false;
+        
+        // Программно отключаем поля, которые нельзя редактировать
+        this.userForm.get('email')?.disable();
+        this.userForm.get('role')?.disable();
     }
 
     save(): void {
@@ -295,17 +385,29 @@ export class PatientDialogComponent implements OnInit {
             return;
         }
 
-        if (this.patientForm.valid) {
-            const formValue = this.patientForm.value;
-            const patientData: AddPatientRequest | UpdatePatientRequest = {
-                firstName: formValue.firstName,
-                lastName: formValue.lastName,
-                surname: formValue.surname || null,
-                email: formValue.email || null,
-                phoneNumber: formValue.phoneNumber || null,
-                notes: formValue.notes || null
-            };
-            this._dialogRef.close(patientData);
+        if (this.userForm.valid) {
+            const formValue = this.userForm.value;
+            
+            if (this.currentMode === 'add') {
+                const userData: AddUserRequest = {
+                    firstName: formValue.firstName,
+                    lastName: formValue.lastName,
+                    surname: formValue.surname || null,
+                    email: formValue.email,
+                    phoneNumber: formValue.phoneNumber || null,
+                    role: formValue.role as Role,
+                    password: formValue.password
+                };
+                this._dialogRef.close({ action: 'add', data: userData });
+            } else {
+                const userData: UpdateUserRequest = {
+                    firstName: formValue.firstName,
+                    lastName: formValue.lastName,
+                    surname: formValue.surname || null,
+                    phoneNumber: formValue.phoneNumber || null
+                };
+                this._dialogRef.close({ action: 'update', data: userData });
+            }
         }
     }
 
@@ -314,7 +416,11 @@ export class PatientDialogComponent implements OnInit {
             // Return to view mode with original data
             this.currentMode = 'view';
             this.isReadonly = true;
-            this.patientForm.patchValue(this.originalData);
+            this.userForm.patchValue(this.originalData);
+            
+            // Включаем поля обратно для view режима
+            this.userForm.get('email')?.enable();
+            this.userForm.get('role')?.enable();
         } else {
             // Close dialog completely
             this._dialogRef.close();

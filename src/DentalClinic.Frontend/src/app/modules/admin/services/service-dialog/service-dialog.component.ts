@@ -59,7 +59,7 @@ export interface ServiceDialogData {
                         class="text-current"
                         [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                     <div class="text-lg font-medium">
-                        {{ data.mode === 'add' ? 'Додати послугу' : 'Редагувати послугу' }}
+                        {{ data.mode === 'add' ? 'Додати послугу' : 'Редагування послуги' }}
                     </div>
                 </div>
                 <button

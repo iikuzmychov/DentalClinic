@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 namespace DentalClinic.WebApi.Controllers;
 
 [ApiController]
-[Authorize(Roles = nameof(Role.Admin))]
 [Route("api/patients")]
 public sealed class PatientsController(ApplicationDbContext dbContext) : ControllerBase
 {
