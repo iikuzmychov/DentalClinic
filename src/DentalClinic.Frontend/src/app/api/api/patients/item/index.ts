@@ -12,10 +12,9 @@ import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type Requ
 export interface PatientsItemRequestBuilder extends BaseRequestBuilder<PatientsItemRequestBuilder> {
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
-     * @returns {Promise<string>}
      * @throws {HttpValidationProblemDetails} error when the service returns a 404 status code
      */
-     delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<string | undefined>;
+     delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<void>;
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<GetPatientResponse>}
@@ -25,11 +24,10 @@ export interface PatientsItemRequestBuilder extends BaseRequestBuilder<PatientsI
     /**
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
-     * @returns {Promise<string>}
      * @throws {HttpValidationProblemDetails} error when the service returns a 404 status code
      * @throws {HttpValidationProblemDetails} error when the service returns a 409 status code
      */
-     put(body: UpdatePatientRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<string | undefined>;
+     put(body: UpdatePatientRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<void>;
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
@@ -60,8 +58,7 @@ export const PatientsItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             404: createHttpValidationProblemDetailsFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitive",
-        responseBodyFactory:  "string",
+        adapterMethodName: "sendNoResponseContent",
     },
     get: {
         uriTemplate: PatientsItemRequestBuilderUriTemplate,
@@ -78,8 +75,7 @@ export const PatientsItemRequestBuilderRequestsMetadata: RequestsMetadata = {
             404: createHttpValidationProblemDetailsFromDiscriminatorValue as ParsableFactory<Parsable>,
             409: createHttpValidationProblemDetailsFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitive",
-        responseBodyFactory:  "string",
+        adapterMethodName: "sendNoResponseContent",
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeUpdatePatientRequest,
         requestInformationContentSetMethod: "setContentFromParsable",

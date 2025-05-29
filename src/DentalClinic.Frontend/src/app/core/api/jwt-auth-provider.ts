@@ -21,12 +21,12 @@ export class JwtAuthenticationProvider implements AuthenticationProvider {
 
         // Get the access token from localStorage
         const accessToken = localStorage.getItem('accessToken');
-        console.log('🔐 JWT Auth Provider - Access token from localStorage:', accessToken ? `${accessToken.substring(0, 20)}...` : 'null');
+        // console.log('🔐 JWT Auth Provider - Access token from localStorage:', accessToken ? `${accessToken.substring(0, 20)}...` : 'null');
         
         if (accessToken && !this.isTokenExpired(accessToken)) {
             // Add Bearer token to the Authorization header
             requestInformation.headers.add('Authorization', `Bearer ${accessToken}`);
-            console.log('✅ JWT Auth Provider - Added Authorization header');
+            // console.log('✅ JWT Auth Provider - Added Authorization header');
         } else if (accessToken && this.isTokenExpired(accessToken)) {
             console.log('⚠️ JWT Auth Provider - Token is expired');
         } else {
@@ -34,7 +34,7 @@ export class JwtAuthenticationProvider implements AuthenticationProvider {
         }
 
         // Log all headers for debugging
-        console.log('📋 JWT Auth Provider - Request headers:', requestInformation.headers);
+        // console.log('📋 JWT Auth Provider - Request headers:', requestInformation.headers);
     }
 
     /**
@@ -59,7 +59,7 @@ export class JwtAuthenticationProvider implements AuthenticationProvider {
             const decodedPayload = JSON.parse(atob(payload));
             const currentTime = Math.floor(Date.now() / 1000);
             const isExpired = decodedPayload.exp < currentTime;
-            console.log(`🕒 JWT Auth Provider - Token expiry check: exp=${decodedPayload.exp}, now=${currentTime}, expired=${isExpired}`);
+            // console.log(`🕒 JWT Auth Provider - Token expiry check: exp=${decodedPayload.exp}, now=${currentTime}, expired=${isExpired}`);
             return isExpired;
         } catch (error) {
             console.log('❌ JWT Auth Provider - Error parsing token:', error);

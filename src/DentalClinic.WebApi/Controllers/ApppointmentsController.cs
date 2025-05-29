@@ -186,10 +186,10 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
 
     [HttpPut("{id:guid}")]
     [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
-    [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> UpdateAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdateAppointmentRequest request,
         CancellationToken cancellationToken = default)
@@ -229,15 +229,15 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
         dbContext.Appointments.Update(appointmentToUpdate);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpPost("{id:guid}/cancel")]
     [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
-    [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> CancelAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> CancelAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -260,15 +260,15 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
         dbContext.Appointments.Update(appointmentToCancel);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpPost("{id:guid}/complete")]
     [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Dentist)}")]
-    [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> CompleteAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> CompleteAsync(
         [FromRoute] Guid id,
         [FromBody] CompleteAppointmentRequest request,
         CancellationToken cancellationToken = default)
@@ -307,15 +307,15 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
         dbContext.Appointments.Update(appointmentToComplete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpPost("{id:guid}/pay")]
     [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
-    [ProducesResponseType<Ok>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> PayAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> PayAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -338,15 +338,15 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
         dbContext.Appointments.Update(appointmentToPay);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> DeleteAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -367,6 +367,6 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
         dbContext.Appointments.Remove(appointmentToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 }

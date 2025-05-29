@@ -138,9 +138,9 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
-    public async Task<Results<Ok, NotFound>> UpdateAsync(
+    public async Task<Results<NoContent, NotFound>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken = default)
@@ -162,13 +162,13 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<Results<Ok, NotFound>> DeleteAsync(
+    public async Task<Results<NoContent, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -184,6 +184,6 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
         dbContext.Users.Remove(userToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 }

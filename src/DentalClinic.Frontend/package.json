@@ -7,11 +7,11 @@
     "private": true,
     "scripts": {
         "ng": "ng",
-        "api:gen": "kiota generate -d ../DentalClinic.WebApi/openapi.json -l typescript -o src/app/api",
         "start": "ng serve",
         "build": "ng build",
-        "watch": "ng build --watch --configuration development",
-        "test": "ng test"
+        "test": "ng test",
+        "e2e": "ng e2e",
+        "api:gen": "kiota generate -d ../DentalClinic.WebApi/openapi.json -l typescript -o src/app/api && powershell -ExecutionPolicy Bypass -File ./fix-imports.ps1"
     },
     "dependencies": {
         "@angular/animations": "17.0.3",

@@ -469,15 +469,6 @@ export function createNotFoundFromDiscriminatorValue(parseNode: ParseNode | unde
 /**
  * Creates a new instance of the appropriate class based on discriminator value
  * @param parseNode The parse node to use to read the discriminator value and create the object
- * @returns {Ok}
- */
-// @ts-ignore
-export function createOkFromDiscriminatorValue(parseNode: ParseNode | undefined) : ((instance?: Parsable) => Record<string, (node: ParseNode) => void>) {
-    return deserializeIntoOk;
-}
-/**
- * Creates a new instance of the appropriate class based on discriminator value
- * @param parseNode The parse node to use to read the discriminator value and create the object
  * @returns {UpdateAppointmentRequest}
  */
 // @ts-ignore
@@ -919,16 +910,6 @@ export function deserializeIntoLoginResponse(loginResponse: Partial<LoginRespons
 export function deserializeIntoNotFound(notFound: Partial<NotFound> | undefined = {}) : Record<string, (node: ParseNode) => void> {
     return {
         "statusCode": n => { notFound.statusCode = n.getNumberValue(); },
-    }
-}
-/**
- * The deserialization information for the current model
- * @returns {Record<string, (node: ParseNode) => void>}
- */
-// @ts-ignore
-export function deserializeIntoOk(ok: Partial<Ok> | undefined = {}) : Record<string, (node: ParseNode) => void> {
-    return {
-        "statusCode": n => { ok.statusCode = n.getNumberValue(); },
     }
 }
 /**
@@ -1469,16 +1450,6 @@ export interface NotFound extends AdditionalDataHolder, ApiError, Parsable {
      */
     statusCode?: number | null;
 }
-export interface Ok extends AdditionalDataHolder, Parsable {
-    /**
-     * Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
-     */
-    additionalData?: Record<string, unknown>;
-    /**
-     * The statusCode property
-     */
-    statusCode?: number | null;
-}
 export type Role = (typeof RoleObject)[keyof typeof RoleObject];
 /**
  * Serializes information the current object
@@ -1921,17 +1892,6 @@ export function serializeNotFound(writer: SerializationWriter, notFound: Partial
     if (notFound) {
         writer.writeNumberValue("statusCode", notFound.statusCode);
         writer.writeAdditionalData(notFound.additionalData);
-    }
-}
-/**
- * Serializes information the current object
- * @param writer Serialization writer to use to serialize this model
- */
-// @ts-ignore
-export function serializeOk(writer: SerializationWriter, ok: Partial<Ok> | undefined | null = {}) : void {
-    if (ok) {
-        writer.writeNumberValue("statusCode", ok.statusCode);
-        writer.writeAdditionalData(ok.additionalData);
     }
 }
 /**

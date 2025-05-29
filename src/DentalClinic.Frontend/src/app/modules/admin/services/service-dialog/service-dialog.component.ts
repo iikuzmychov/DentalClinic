@@ -49,13 +49,22 @@ export interface ServiceDialogData {
             
             <!-- Header -->
             <div class="flex flex-0 items-center justify-between h-16 px-6 bg-primary text-on-primary">
-                <div class="text-lg font-medium">
-                    {{ data.mode === 'add' ? 'Додати послугу' : 'Редагувати послугу' }}
+                <div class="flex items-center space-x-2">
+                    <mat-icon 
+                        *ngIf="data.mode === 'edit'"
+                        class="text-current"
+                        [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                    <mat-icon 
+                        *ngIf="data.mode === 'add'"
+                        class="text-current"
+                        [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                    <div class="text-lg font-medium">
+                        {{ data.mode === 'add' ? 'Додати послугу' : 'Редагувати послугу' }}
+                    </div>
                 </div>
                 <button
                     mat-icon-button
-                    (click)="cancel()"
-                    [tabIndex]="-1">
+                    (click)="cancel()">
                     <mat-icon
                         class="text-current"
                         [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>

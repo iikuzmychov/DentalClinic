@@ -14,6 +14,12 @@ export const initialDataResolver = () =>
                 title: 'Послуги',
                 type: 'basic',
                 link: '/services'
+            },
+            {
+                id: 'patients',
+                title: 'Пацієнти',
+                type: 'basic',
+                link: '/patients'
             }
         ],
         horizontal: [
@@ -22,6 +28,12 @@ export const initialDataResolver = () =>
                 title: 'Послуги',
                 type: 'basic',
                 link: '/services'
+            },
+            {
+                id: 'patients',
+                title: 'Пацієнти',
+                type: 'basic',
+                link: '/patients'
             }
         ],
         compact: [],

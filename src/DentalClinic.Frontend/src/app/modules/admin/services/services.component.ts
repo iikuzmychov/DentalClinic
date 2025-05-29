@@ -100,7 +100,7 @@ export class ServicesComponent implements OnInit
             queryParameters: {
                 name: this.searchTerm || undefined,
                 pageIndex: 0,
-                pageSize: 1000
+                pageSize: 20
             } as ServicesRequestBuilderGetQueryParameters
         };
         
@@ -207,6 +207,7 @@ export class ServicesComponent implements OnInit
         dialogRef.afterClosed().subscribe(result => {
             if (result && service.id) {
                 this.isLoading = true;
+                
                 // Using the same structure as generated api.services.byId(id).delete()
                 from(this.apiClient.client.api.services.byId(service.id).delete()).subscribe({
                     next: () => {
@@ -229,6 +230,7 @@ export class ServicesComponent implements OnInit
     private createService(serviceData: AddServiceRequest): void
     {
         this.isLoading = true;
+        
         // Using the same structure as generated api.services.post(body)
         from(this.apiClient.client.api.services.post(serviceData)).subscribe({
             next: () => {
@@ -249,6 +251,7 @@ export class ServicesComponent implements OnInit
     private updateService(serviceId: any, serviceData: UpdateServiceRequest): void
     {
         this.isLoading = true;
+        
         // Using the same structure as generated api.services.byId(id).put(body)
         from(this.apiClient.client.api.services.byId(serviceId).put(serviceData)).subscribe({
             next: () => {

@@ -132,10 +132,10 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
-    public async Task<Results<Ok, NotFound, Conflict>> UpdateAsync(
+    public async Task<Results<NoContent, NotFound, Conflict>> UpdateAsync(
         [FromRoute] Guid id,
         [FromBody] UpdatePatientRequest request,
         CancellationToken cancellationToken = default)
@@ -170,13 +170,13 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
         dbContext.Patients.Update(patientToUpdate);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
-    public async Task<Results<Ok, NotFound>> DeleteAsync(
+    public async Task<Results<NoContent, NotFound>> DeleteAsync(
         [FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -192,6 +192,6 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
         dbContext.Patients.Remove(patientToDelete);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 }

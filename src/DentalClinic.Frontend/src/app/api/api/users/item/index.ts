@@ -12,10 +12,9 @@ import { type BaseRequestBuilder, type Parsable, type ParsableFactory, type Requ
 export interface UsersItemRequestBuilder extends BaseRequestBuilder<UsersItemRequestBuilder> {
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
-     * @returns {Promise<string>}
      * @throws {HttpValidationProblemDetails} error when the service returns a 404 status code
      */
-     delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<string | undefined>;
+     delete(requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<void>;
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {Promise<GetUserResponse>}
@@ -25,10 +24,9 @@ export interface UsersItemRequestBuilder extends BaseRequestBuilder<UsersItemReq
     /**
      * @param body The request body
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
-     * @returns {Promise<string>}
      * @throws {NotFound} error when the service returns a 404 status code
      */
-     put(body: UpdateUserRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<string | undefined>;
+     put(body: UpdateUserRequest, requestConfiguration?: RequestConfiguration<object> | undefined) : Promise<void>;
     /**
      * @param requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @returns {RequestInformation}
@@ -59,8 +57,7 @@ export const UsersItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             404: createHttpValidationProblemDetailsFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitive",
-        responseBodyFactory:  "string",
+        adapterMethodName: "sendNoResponseContent",
     },
     get: {
         uriTemplate: UsersItemRequestBuilderUriTemplate,
@@ -76,8 +73,7 @@ export const UsersItemRequestBuilderRequestsMetadata: RequestsMetadata = {
         errorMappings: {
             404: createNotFoundFromDiscriminatorValue as ParsableFactory<Parsable>,
         },
-        adapterMethodName: "sendPrimitive",
-        responseBodyFactory:  "string",
+        adapterMethodName: "sendNoResponseContent",
         requestBodyContentType: "application/json",
         requestBodySerializer: serializeUpdateUserRequest,
         requestInformationContentSetMethod: "setContentFromParsable",
