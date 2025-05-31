@@ -9,15 +9,15 @@ import { LayoutComponent } from 'app/layout/layout.component';
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
 
-    // Redirect empty path to '/services'
-    {path: '', pathMatch : 'full', redirectTo: 'services'},
+    // Redirect empty path to '/appointments'
+    {path: '', pathMatch : 'full', redirectTo: 'appointments'},
 
-    // Redirect signed-in user to the '/services'
+    // Redirect signed-in user to the '/appointments'
     //
     // After the user signs in, the sign-in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'services'},
+    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'appointments'},
 
     // Auth routes for guests
     {
@@ -77,6 +77,7 @@ export const appRoutes: Route[] = [
             initialData: initialDataResolver
         },
         children: [
+            {path: 'appointments', loadChildren: () => import('app/modules/admin/appointments/appointments.routes')},
             {path: 'services', loadChildren: () => import('app/modules/admin/services/services.routes')},
             {path: 'patients', loadChildren: () => import('app/modules/admin/patients/patients.routes')},
             {path: 'users', loadChildren: () => import('app/modules/admin/users/users.routes')},

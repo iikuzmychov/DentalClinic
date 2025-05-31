@@ -10,6 +10,12 @@ export const initialDataResolver = () =>
     const simpleNavigation = {
         default: [
             {
+                id: 'appointments',
+                title: 'Записи на прийом',
+                type: 'basic',
+                link: '/appointments'
+            },
+            {
                 id: 'services',
                 title: 'Послуги',
                 type: 'basic',
@@ -29,6 +35,12 @@ export const initialDataResolver = () =>
             }
         ],
         horizontal: [
+            {
+                id: 'appointments',
+                title: 'Записи на прийом',
+                type: 'basic',
+                link: '/appointments'
+            },
             {
                 id: 'services',
                 title: 'Послуги',

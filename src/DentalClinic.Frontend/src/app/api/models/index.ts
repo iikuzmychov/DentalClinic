@@ -669,6 +669,7 @@ export function deserializeIntoGetAppointmentResponseItemProvidedService(getAppo
     return {
         "id": n => { getAppointmentResponseItemProvidedService.id = n.getGuidValue(); },
         "name": n => { getAppointmentResponseItemProvidedService.name = n.getStringValue(); },
+        "price": n => { getAppointmentResponseItemProvidedService.price = n.getNumberValue(); },
     }
 }
 /**
@@ -1055,6 +1056,10 @@ export interface GetAppointmentResponseItemProvidedService extends AdditionalDat
      * The name property
      */
     name?: string | null;
+    /**
+     * The price property
+     */
+    price?: number | null;
 }
 export interface GetPatientResponse extends AdditionalDataHolder, Parsable {
     /**
@@ -1631,6 +1636,7 @@ export function serializeGetAppointmentResponseItemProvidedService(writer: Seria
     if (getAppointmentResponseItemProvidedService) {
         writer.writeGuidValue("id", getAppointmentResponseItemProvidedService.id);
         writer.writeStringValue("name", getAppointmentResponseItemProvidedService.name);
+        writer.writeNumberValue("price", getAppointmentResponseItemProvidedService.price);
         writer.writeAdditionalData(getAppointmentResponseItemProvidedService.additionalData);
     }
 }

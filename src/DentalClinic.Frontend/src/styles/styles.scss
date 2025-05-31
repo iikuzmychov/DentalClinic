@@ -2,3 +2,37 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+
+// Импорт базовых стилей angular-calendar
+@import "../../node_modules/angular-calendar/css/angular-calendar.css";
+
+/* Angular Calendar customizations */
+.cal-month-view .cal-day-cell.cal-weekend .cal-day-number {
+    color: inherit !important;
+}
+
+.cal-week-view .cal-header.cal-weekend span {
+    color: inherit !important;
+}
+
+.cal-week-view .cal-time {
+    font-size: 12px;
+}
+
+/* Убираю чередование цветов */
+.weekly-calendar .cal-week-view .cal-hour {
+    background-color: white !important;
+}
+
+/* Фиксация заголовков */
+.weekly-calendar .cal-day-headers {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white;
+}
+
+.weekly-calendar .cal-time-events {
+    overflow-y: auto;
+    max-height: 280px;
+} 

@@ -141,7 +141,8 @@ public sealed class AppointmentsController(ApplicationDbContext dbContext) : Con
                 .Select(service => new GetAppointmentResponseItemProvidedService
                 {
                     Id = service.Id.Value,
-                    Name = service.Name
+                    Name = service.Name,
+                    Price = service.Price.Value
                 })
                 .ToList()
         });

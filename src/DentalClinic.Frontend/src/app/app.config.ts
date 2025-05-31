@@ -1,16 +1,22 @@
 import { provideHttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, inject } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, inject, LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeUk from '@angular/common/locales/uk';
 import { LuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { PreloadAllModules, provideRouter, withInMemoryScrolling, withPreloading } from '@angular/router';
 import { provideFuse } from '@fuse';
 import { provideTransloco, TranslocoService } from '@ngneat/transloco';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { firstValueFrom } from 'rxjs';
 import { appRoutes } from 'app/app.routes';
 import { provideAuth } from 'app/core/auth/auth.provider';
 import { provideIcons } from 'app/core/icons/icons.provider';
 import { TranslocoHttpLoader } from './core/transloco/transloco.http-loader';
+
+// Регистрируем украинскую локаль
+registerLocaleData(localeUk);
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -20,6 +26,15 @@ export const appConfig: ApplicationConfig = {
             withPreloading(PreloadAllModules),
             withInMemoryScrolling({scrollPositionRestoration: 'enabled'}),
         ),
+
+        // ngx-mask configuration
+        provideEnvironmentNgxMask(),
+
+        // Locale configuration for 24-hour format
+        {
+            provide: LOCALE_ID,
+            useValue: 'uk'
+        },
 
         // Material Date Adapter
         {
