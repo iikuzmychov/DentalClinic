@@ -377,24 +377,6 @@ export class AppointmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * Handle event time change (drag & drop)
-     */
-    onEventTimeChange(changeEvent: CalendarEventTimesChangedEvent): void {
-        this._eventsHook.handleEventTimeChange(changeEvent, () => {
-            this.loadAppointments(); // Reload to reflect changes
-        }).subscribe();
-    }
-
-    /**
-     * Handle event resize
-     */
-    onEventResize(resizeEvent: any): void {
-        this._eventsHook.handleEventResize(resizeEvent, () => {
-            this.loadAppointments(); // Reload to reflect changes
-        }).subscribe();
-    }
-
-    /**
      * Add new appointment
      */
     addAppointment(): void {

@@ -120,9 +120,8 @@
                     [precision]="'minutes'"
                     [weekendDays]="[0, 6]"
                     [eventSnapSize]="15"
+                    [dragToCreate]="false"
                     (eventClicked)="onEventClick($event.event)"
-                    (eventTimesChanged)="onEventTimeChange($event)"
-                    (eventResized)="onEventResize($event)"
                     class="weekly-calendar h-full">
                     
                     <!-- Custom event template -->
@@ -130,7 +129,9 @@
                         #weekEventTemplate
                         let-weekEvent="weekEvent"
                         let-locale="locale">
-                        <div class="cal-event h-full p-1 text-xs leading-tight overflow-hidden" [innerHTML]="weekEvent.event.title">
+                        <div 
+                            class="cal-event h-full p-1 text-xs leading-tight overflow-hidden" 
+                            [innerHTML]="weekEvent.event.title">
                         </div>
                     </ng-template>
                     

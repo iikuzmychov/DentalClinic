@@ -154,7 +154,6 @@
         overflow: hidden;
         border: none !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
         transition: all 0.2s ease;
         
         &:hover {
@@ -173,23 +172,6 @@
             font-size: 0.6rem;
             opacity: 0.8;
         }
-    }
-
-    /* Status-specific styles */
-    .appointment-scheduled .cal-event {
-        /* Цвет задается через CalendarService */
-    }
-
-    .appointment-completed .cal-event {
-        /* Цвет задается через CalendarService */
-    }
-
-    .appointment-cancelled .cal-event {
-        /* Цвет задается через CalendarService */
-    }
-
-    .appointment-paid .cal-event {
-        /* Цвет задается через CalendarService */
     }
 
     /* Calendar Days - old styles cleanup */
