@@ -79,6 +79,7 @@
 
                 <!-- Add Appointment Button -->
                 <button
+                    *ngIf="canCreate$ | async"
                     mat-flat-button
                     [color]="'primary'"
                     (click)="addAppointment()">

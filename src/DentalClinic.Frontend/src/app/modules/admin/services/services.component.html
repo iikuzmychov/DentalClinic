@@ -15,6 +15,7 @@
             </mat-form-field>
             
             <button
+                *ngIf="canCreate$ | async"
                 mat-flat-button
                 [color]="'primary'"
                 (click)="addService()"
@@ -49,7 +50,7 @@
                         <div class="w-64 px-6 py-3">
                             <span class="font-semibold text-secondary">Ціна</span>
                         </div>
-                        <div class="w-32 px-6 py-3">
+                        <div class="w-32 px-6 py-3" *ngIf="(canEdit$ | async) || (canDelete$ | async)">
                             <span class="font-semibold text-secondary">Дії</span>
                         </div>
                     </div>
@@ -66,9 +67,10 @@
                                 {{ service.price ? (service.price + ' грн') : 'Не вказано' }}
                             </span>
                         </div>
-                        <div class="w-32 px-6 py-3 flex items-center">
+                        <div class="w-32 px-6 py-3 flex items-center" *ngIf="(canEdit$ | async) || (canDelete$ | async)">
                             <div class="flex items-center space-x-1">
                                 <button
+                                    *ngIf="canEdit$ | async"
                                     mat-icon-button
                                     [matTooltip]="'Редагувати'"
                                     [disabled]="isLoading"
@@ -76,6 +78,7 @@
                                     <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
                                 </button>
                                 <button
+                                    *ngIf="canDelete$ | async"
                                     mat-icon-button
                                     [matTooltip]="'Видалити'"
                                     [color]="'warn'"

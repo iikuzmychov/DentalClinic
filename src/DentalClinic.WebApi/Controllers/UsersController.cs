@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 namespace DentalClinic.WebApi.Controllers;
 
 [ApiController]
-[Authorize(Roles = nameof(Role.Admin))]
 [Route("api/users")]
 public sealed class UsersController(ApplicationDbContext dbContext) : ControllerBase
 {
@@ -105,6 +104,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType<AddUserResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<Conflict>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddUserResponse>, Conflict>> AddAsync(
@@ -137,6 +137,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<NotFound>(StatusCodes.Status404NotFound)]
     public async Task<Results<NoContent, NotFound>> UpdateAsync(
@@ -165,6 +166,7 @@ public sealed class UsersController(ApplicationDbContext dbContext) : Controller
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<NoContent, NotFound>> DeleteAsync(

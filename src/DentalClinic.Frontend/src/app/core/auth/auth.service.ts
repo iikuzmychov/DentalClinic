@@ -170,6 +170,7 @@ export class AuthService
         try {
             // Decode the token to get user data
             const decodedToken = this._decodeJwtToken(token);
+            console.log('🔍 AuthService - Decoded token:', decodedToken);
 
             // Extract user information from token
             const user: any = {};
@@ -179,21 +180,25 @@ export class AuthService
             
             // Email
             if (decodedToken.email) user.email = decodedToken.email;
+
+            // Role from role field
+            if (decodedToken.role) user.role = decodedToken.role;
             
             // Name - build full name from all available name fields
             let fullName = '';
             const nameParts = [];
             
-            // Try different name field combinations
-            // Ukrainian format: lastName firstName surname
-            if (decodedToken.lastName) nameParts.push(decodedToken.lastName);
-            if (decodedToken.firstName) nameParts.push(decodedToken.firstName);
-            if (decodedToken.surname) nameParts.push(decodedToken.surname);
+            // Use standard JWT claims first (these are what we actually get in the token)
+            // Ukrainian format: family_name given_name middle_name
+            if (decodedToken.family_name) nameParts.push(decodedToken.family_name);
+            if (decodedToken.given_name) nameParts.push(decodedToken.given_name);
+            if (decodedToken.middle_name) nameParts.push(decodedToken.middle_name);
             
-            // Fallback to standard JWT claims if Ukrainian fields not available
+            // Fallback to custom Ukrainian fields if standard JWT fields not available
             if (nameParts.length === 0) {
-                if (decodedToken.family_name) nameParts.push(decodedToken.family_name);
-                if (decodedToken.given_name) nameParts.push(decodedToken.given_name);
+                if (decodedToken.lastName) nameParts.push(decodedToken.lastName);
+                if (decodedToken.firstName) nameParts.push(decodedToken.firstName);
+                if (decodedToken.surname) nameParts.push(decodedToken.surname);
             }
             
             // Fallback to name field if available
@@ -205,6 +210,9 @@ export class AuthService
                 fullName = nameParts.join(' ');
                 user.name = fullName;
             }
+            
+            console.log('👤 AuthService - Extracted user data:', user);
+            console.log('📝 AuthService - Name parts:', nameParts);
             
             // Always set avatar as empty string for icon display
             user.avatar = '';

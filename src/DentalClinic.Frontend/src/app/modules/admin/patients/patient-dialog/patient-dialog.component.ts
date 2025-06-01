@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { NgIf, AsyncPipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +6,8 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { RoleService } from 'app/core/auth/role.service';
+import { Observable } from 'rxjs';
 import { 
     AddPatientRequest, 
     UpdatePatientRequest, 
@@ -22,6 +24,7 @@ export interface PatientDialogData {
     standalone: true,
     imports: [
         NgIf,
+        AsyncPipe,
         ReactiveFormsModule,
         MatButtonModule,
         MatDialogModule,
@@ -227,7 +230,7 @@ export interface PatientDialogData {
                         {{ currentMode === 'add' ? 'Додати' : 'Зберегти' }}
                     </button>
                     <button
-                        *ngIf="currentMode === 'view'"
+                        *ngIf="currentMode === 'view' && (canEdit$ | async)"
                         mat-flat-button
                         type="button"
                         [color]="'primary'"
@@ -245,14 +248,17 @@ export class PatientDialogComponent implements OnInit {
     currentMode: 'add' | 'edit' | 'view';
     originalData: any = null; // Store original data for cancellation
     isReadonly: boolean = false;
+    canEdit$: Observable<boolean>;
 
     constructor(
         private _formBuilder: FormBuilder,
         private _dialogRef: MatDialogRef<PatientDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: PatientDialogData
+        @Inject(MAT_DIALOG_DATA) public data: PatientDialogData,
+        private _roleService: RoleService
     ) {
         this.currentMode = this.data.mode;
         this.isReadonly = this.currentMode === 'view';
+        this.canEdit$ = this._roleService.canEditPatients();
         this.patientForm = this._formBuilder.group({
             firstName: ['', [Validators.required]],
             lastName: ['', [Validators.required]],

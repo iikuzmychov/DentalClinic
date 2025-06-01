@@ -1,4 +1,4 @@
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { from, forkJoin, Observable } from 'rxjs';
 import { finalize, map, startWith } from 'rxjs/operators';
 import { ApiClientService } from 'app/core/api/api-client.service';
+import { RoleService } from 'app/core/auth/role.service';
 import { 
     AddAppointmentRequest,
     UpdateAppointmentRequest,
@@ -53,6 +54,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
     imports: [
         NgIf,
         NgFor,
+        AsyncPipe,
         ReactiveFormsModule,
         MatButtonModule,
         MatDialogModule,
@@ -349,7 +351,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                             <div class="flex items-center space-x-2">
                                 <!-- Complete Button - only for Scheduled -->
                                 <button
-                                    *ngIf="canComplete()"
+                                    *ngIf="canComplete() | async"
                                     mat-flat-button
                                     type="button"
                                     style="background-color: #4caf50; color: white;"
@@ -361,7 +363,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                                 
                                 <!-- Pay Button - only for Completed -->
                                 <button
-                                    *ngIf="canPay()"
+                                    *ngIf="canPay() | async"
                                     mat-flat-button
                                     color="accent"
                                     type="button"
@@ -373,7 +375,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                                 
                                 <!-- Cancel Button - only for Scheduled -->
                                 <button
-                                    *ngIf="canCancel()"
+                                    *ngIf="canCancel() | async"
                                     mat-flat-button
                                     color="warn"
                                     type="button"
@@ -385,7 +387,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                                 
                                 <!-- Delete Button - only for Cancelled -->
                                 <button
-                                    *ngIf="canDelete()"
+                                    *ngIf="canDelete() | async"
                                     mat-flat-button
                                     color="warn"
                                     type="button"
@@ -408,7 +410,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                                 </button>
                                 <!-- Edit button - only for Scheduled -->
                                 <button
-                                    *ngIf="canEdit()"
+                                    *ngIf="canEdit() | async"
                                     mat-flat-button
                                     type="button"
                                     [color]="'primary'"
@@ -476,7 +478,8 @@ export class AppointmentDialogComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: AppointmentDialogData,
         private apiClient: ApiClientService,
         private dialog: MatDialog,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private roleService: RoleService
     ) {
         // Initially set readonly based on mode only (status will be checked later)
         this.isReadonly = this.data.mode === 'view';
@@ -855,15 +858,15 @@ export class AppointmentDialogComponent implements OnInit {
      * Switch to edit mode
      */
     switchToEditMode(): void {
-        // Check if editing is allowed for current status
-        const currentStatus = this.data.appointment?.status || 'Scheduled';
-        if (currentStatus !== 'Scheduled') {
-            console.log('Cannot edit appointment with status:', currentStatus);
-            return; // Cannot edit in current status
-        }
-        
-        this.data.mode = 'edit';
-        this.isReadonly = false;
+        // Check if editing is allowed for current status and role
+        this.canEdit().subscribe(canEdit => {
+            if (canEdit) {
+                this.data.mode = 'edit';
+                this.isReadonly = false;
+            } else {
+                console.log('Cannot edit appointment: insufficient permissions or invalid status');
+            }
+        });
     }
 
     /**
@@ -877,36 +880,51 @@ export class AppointmentDialogComponent implements OnInit {
     /**
      * Check if appointment can be edited
      */
-    canEdit(): boolean {
-        return this.currentStatus === 'Scheduled';
+    canEdit(): Observable<boolean> {
+        const statusCheck = this.currentStatus === 'Scheduled';
+        return this.roleService.canEditAppointments().pipe(
+            map(roleCheck => statusCheck && roleCheck)
+        );
     }
 
     /**
      * Check if appointment can be cancelled
      */
-    canCancel(): boolean {
-        return this.currentStatus === 'Scheduled';
+    canCancel(): Observable<boolean> {
+        const statusCheck = this.currentStatus === 'Scheduled';
+        return this.roleService.canCancelAppointments().pipe(
+            map(roleCheck => statusCheck && roleCheck)
+        );
     }
 
     /**
      * Check if appointment can be completed
      */
-    canComplete(): boolean {
-        return this.currentStatus === 'Scheduled';
+    canComplete(): Observable<boolean> {
+        const statusCheck = this.currentStatus === 'Scheduled';
+        return this.roleService.canCompleteAppointments().pipe(
+            map(roleCheck => statusCheck && roleCheck)
+        );
     }
 
     /**
      * Check if appointment can be paid
      */
-    canPay(): boolean {
-        return this.currentStatus === 'Completed';
+    canPay(): Observable<boolean> {
+        const statusCheck = this.currentStatus === 'Completed';
+        return this.roleService.canPayAppointments().pipe(
+            map(roleCheck => statusCheck && roleCheck)
+        );
     }
 
     /**
      * Check if appointment can be deleted
      */
-    canDelete(): boolean {
-        return this.currentStatus === 'Cancelled';
+    canDelete(): Observable<boolean> {
+        const statusCheck = this.currentStatus === 'Cancelled';
+        return this.roleService.canDeleteAppointments().pipe(
+            map(roleCheck => statusCheck && roleCheck)
+        );
     }
 
     /**

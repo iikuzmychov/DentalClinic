@@ -37,4 +37,12 @@ export class NavigationService
             }),
         );
     }
+
+    /**
+     * Update navigation data
+     */
+    updateNavigation(navigation: Navigation): void
+    {
+        this._navigation.next(navigation);
+    }
 }

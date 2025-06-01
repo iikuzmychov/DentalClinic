@@ -1,82 +1,14 @@
 import { inject } from '@angular/core';
-import { NavigationService } from 'app/core/navigation/navigation.service';
-import { forkJoin, of, tap } from 'rxjs';
+import { RoleBasedNavigationService } from 'app/core/navigation/role-based-navigation.service';
+import { of } from 'rxjs';
 
 export const initialDataResolver = () =>
 {
-    const navigationService = inject(NavigationService);
+    const roleBasedNavigationService = inject(RoleBasedNavigationService);
     
-    // Create simple navigation data
-    const simpleNavigation = {
-        default: [
-            {
-                id: 'appointments',
-                title: 'Розклад',
-                type: 'basic',
-                link: '/appointments'
-            },
-            {
-                id: 'patients',
-                title: 'Пацієнти',
-                type: 'basic',
-                link: '/patients'
-            },
-            {
-                id: 'services',
-                title: 'Послуги',
-                type: 'basic',
-                link: '/services'
-            },
-            {
-                id: 'divider-1',
-                type: 'divider'
-            },
-            {
-                id: 'users',
-                title: 'Користувачі',
-                type: 'basic',
-                link: '/users'
-            }
-        ],
-        horizontal: [
-            {
-                id: 'appointments',
-                title: 'Розклад',
-                type: 'basic',
-                link: '/appointments'
-            },
-            {
-                id: 'patients',
-                title: 'Пацієнти',
-                type: 'basic',
-                link: '/patients'
-            },
-            {
-                id: 'services',
-                title: 'Послуги',
-                type: 'basic',
-                link: '/services'
-            },
-            {
-                id: 'divider-1',
-                type: 'divider'
-            },
-            {
-                id: 'users',
-                title: 'Користувачі',
-                type: 'basic',
-                link: '/users'
-            }
-        ],
-        compact: [],
-        futuristic: []
-    };
+    // Initialize navigation based on current user role
+    roleBasedNavigationService.initializeNavigation();
     
-    // Set the navigation data
-    return of(simpleNavigation).pipe(
-        tap((navigation) => {
-            // Manually trigger navigation update
-            (navigationService as any)._navigation.next(navigation);
-        })
-    );
+    // Return observable to satisfy resolver requirements
+    return of(true);
 };

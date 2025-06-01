@@ -81,6 +81,7 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType<AddServiceResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddServiceResponse>, Conflict>> AddAsync(
@@ -108,6 +109,7 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
@@ -144,6 +146,7 @@ public sealed class ServicesController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<NoContent, NotFound>> DeleteAsync(

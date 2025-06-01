@@ -96,6 +96,7 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
     [ProducesResponseType<AddPatientResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
     public async Task<Results<Ok<AddPatientResponse>, Conflict>> AddAsync(
@@ -131,6 +132,7 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = $"{nameof(Role.Admin)},{nameof(Role.Receptionist)}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status409Conflict)]
@@ -173,6 +175,7 @@ public sealed class PatientsController(ApplicationDbContext dbContext) : Control
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = nameof(Role.Admin))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<HttpValidationProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<Results<NoContent, NotFound>> DeleteAsync(

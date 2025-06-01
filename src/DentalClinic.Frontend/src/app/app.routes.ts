@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { initialDataResolver } from 'app/app.resolvers';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
+import { adminGuard } from 'app/core/auth/guards/admin.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 
 // @formatter:off
@@ -80,7 +81,7 @@ export const appRoutes: Route[] = [
             {path: 'appointments', loadChildren: () => import('app/modules/admin/appointments/appointments.routes')},
             {path: 'services', loadChildren: () => import('app/modules/admin/services/services.routes')},
             {path: 'patients', loadChildren: () => import('app/modules/admin/patients/patients.routes')},
-            {path: 'users', loadChildren: () => import('app/modules/admin/users/users.routes')},
+            {path: 'users', canActivate: [adminGuard], loadChildren: () => import('app/modules/admin/users/users.routes')},
         ]
     }
 ];

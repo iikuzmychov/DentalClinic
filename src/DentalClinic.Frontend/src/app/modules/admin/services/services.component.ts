@@ -1,4 +1,4 @@
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { NgIf, NgFor, CurrencyPipe, AsyncPipe } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,9 +12,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { type ServicesRequestBuilderGetQueryParameters } from 'app/api/api/services';
 import { ApiClientService } from 'app/core/api/api-client.service';
+import { RoleService } from 'app/core/auth/role.service';
 import { 
     ListServicesResponse, 
     ListServicesResponseItem, 
@@ -33,6 +34,7 @@ import { DeleteConfirmationDialogComponent, DeleteConfirmationData } from './del
         NgIf,
         NgFor,
         CurrencyPipe,
+        AsyncPipe,
         FormsModule,
         MatButtonModule,
         MatCardModule,
@@ -61,15 +63,25 @@ export class ServicesComponent implements OnInit
     
     private searchTimeout: any;
 
+    // Role-based permissions
+    canCreate$: Observable<boolean>;
+    canEdit$: Observable<boolean>;
+    canDelete$: Observable<boolean>;
+
     /**
      * Constructor - Using generated types and new API client
      */
     constructor(
         private apiClient: ApiClientService,
         private _dialog: MatDialog,
-        private _snackBar: MatSnackBar
+        private _snackBar: MatSnackBar,
+        private _roleService: RoleService
     )
     {
+        // Initialize permission observables
+        this.canCreate$ = this._roleService.canCreateServices();
+        this.canEdit$ = this._roleService.canEditServices();
+        this.canDelete$ = this._roleService.canDeleteServices();
     }
 
     // -----------------------------------------------------------------------------------------------------
