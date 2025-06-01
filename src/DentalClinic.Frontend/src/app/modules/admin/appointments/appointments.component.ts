@@ -133,10 +133,7 @@ export class AppointmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        // Задержка чтобы убедиться что календарь отрендерился
-        setTimeout(() => {
-            this.scrollToCurrentTime();
-        }, 500);
+        // Calendar is ready
     }
 
     ngOnDestroy(): void {
@@ -488,38 +485,6 @@ export class AppointmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Scroll calendar to current time
-     */
-    private scrollToCurrentTime(): void {
-        try {
-            const calendarElement = document.querySelector('.weekly-calendar .cal-time-events');
-            if (!calendarElement) {
-                return;
-            }
-
-            const now = new Date();
-            const currentHour = now.getHours();
-            const currentMinutes = now.getMinutes();
-            
-            // Calculate the scroll position
-            // Each hour takes approximately 60px (this may need adjustment based on your calendar styling)
-            const pixelsPerHour = 60;
-            const pixelsPerMinute = pixelsPerHour / 60;
-            
-            const scrollPosition = (currentHour * pixelsPerHour) + (currentMinutes * pixelsPerMinute);
-            
-            // Scroll to position with smooth behavior
-            calendarElement.scrollTo({
-                top: scrollPosition,
-                behavior: 'smooth'
-            });
-            
-        } catch (error) {
-            console.error('Error scrolling to current time:', error);
-        }
-    }
 
     /**
      * Auto-select current dentist if user is a dentist

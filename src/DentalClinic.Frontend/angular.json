@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "fuse": {
+        "dental-clinic": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/fuse",
+                        "outputPath": "dist/dental-clinic",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
@@ -93,10 +93,10 @@
                     },
                     "configurations": {
                         "production": {
-                          "buildTarget": "fuse:build:production"
+                          "buildTarget": "dental-clinic:build:production"
                         },
                         "development": {
-                          "buildTarget": "fuse:build:development"
+                          "buildTarget": "dental-clinic:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -104,7 +104,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "fuse:build"
+                      "buildTarget": "dental-clinic:build"
                     }
                 },
                 "test": {
