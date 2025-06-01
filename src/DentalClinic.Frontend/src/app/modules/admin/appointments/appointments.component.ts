@@ -30,7 +30,7 @@ import { RoleService } from 'app/core/auth/role.service';
 import { UserService } from 'app/core/user/user.service';
 import { 
     ListAppointmentsResponse, 
-    ListAppointmentsResponseItem,
+    ListAppointmentsResponseItem, 
     ListUsersResponse,
     ListUsersResponseItem,
     ListPatientsResponse,
@@ -366,7 +366,7 @@ export class AppointmentsComponent implements OnInit, AfterViewInit, OnDestroy {
                         cancelled: 'Запис скасовано',
                         deleted: 'Запис видалено'
                     };
-                    
+        
                     this._snackBar.open(messages[result.action] || 'Статус змінено', 'OK', { duration: 3000 });
                 }
             });

@@ -99,7 +99,9 @@ export class CalendarService {
         // Create comprehensive title
         const title = this.formatEventTitle(patientName, dentistName, appointment.providedServices, totalPrice, status);
 
-        // Disable drag & drop and resizing for all events
+        // Only allow drag & drop and resizing for scheduled appointments
+        const isScheduled = status === 'Scheduled';
+
         return {
             id: appointment.id || '',
             start: startTime,
@@ -111,10 +113,10 @@ export class CalendarService {
             },
             cssClass: `appointment-${status.toLowerCase()}`,
             resizable: {
-                beforeStart: false,
-                afterEnd: false
+                beforeStart: isScheduled,
+                afterEnd: isScheduled
             },
-            draggable: false,
+            draggable: isScheduled,
             meta: {
                 appointment,
                 patientName,
@@ -214,7 +216,9 @@ export class CalendarService {
         // Create comprehensive title
         const title = this.formatEventTitle(patientName, dentistName, appointment.providedServices, totalPrice, status);
 
-        // Disable drag & drop and resizing for all events
+        // Only allow drag & drop and resizing for scheduled appointments
+        const isScheduled = status === 'Scheduled';
+
         return {
             id: appointment.id || '',
             start: startTime,
@@ -226,10 +230,10 @@ export class CalendarService {
             },
             cssClass: `appointment-${status.toLowerCase()}`,
             resizable: {
-                beforeStart: false,
-                afterEnd: false
+                beforeStart: isScheduled,
+                afterEnd: isScheduled
             },
-            draggable: false,
+            draggable: isScheduled,
             meta: {
                 appointment,
                 patientName,

@@ -1,0 +1,226 @@
+<div class="flex flex-col flex-1 min-w-0">
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1 p-6 sm:p-10">
+        
+        <!-- Access Check -->
+        <div *ngIf="!(canViewReports$ | async)" class="flex items-center justify-center h-full">
+            <div class="text-center">
+                <mat-icon class="text-6xl text-gray-400 mb-4">lock</mat-icon>
+                <h2 class="text-2xl font-semibold text-gray-600 mb-2">Немає доступу</h2>
+                <p class="text-gray-500">Ця сторінка доступна лише адміністраторам</p>
+            </div>
+        </div>
+
+        <!-- Reports Content -->
+        <div *ngIf="canViewReports$ | async" class="flex flex-col flex-1">
+            
+            <!-- Header with Filters -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 flex-shrink-0">
+                
+                <!-- Title -->
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                        Фінансові звіти
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        {{ getDateRangeDisplay() }}
+                    </p>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex items-center gap-6">
+                    
+                    <!-- Quick Date Buttons -->
+                    <div class="flex gap-2">
+                        <button
+                            mat-stroked-button
+                            (click)="setPreviousMonth()"
+                            [disabled]="isLoading"
+                            class="px-4">
+                            Попередній місяць
+                        </button>
+                        
+                        <button
+                            mat-stroked-button
+                            (click)="setCurrentMonth()"
+                            [disabled]="isLoading"
+                            class="px-4">
+                            Поточний місяць
+                        </button>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-600">Період:</span>
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-40">
+                            <mat-label>Від</mat-label>
+                            <input 
+                                matInput 
+                                [matDatepicker]="startPicker"
+                                [(ngModel)]="startDate"
+                                (dateChange)="onDateRangeChange()"
+                                [disabled]="isLoading">
+                            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #startPicker></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-40">
+                            <mat-label>До</mat-label>
+                            <input 
+                                matInput 
+                                [matDatepicker]="endPicker"
+                                [(ngModel)]="endDate"
+                                (dateChange)="onDateRangeChange()"
+                                [disabled]="isLoading">
+                            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #endPicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    
+                </div>
+
+            </div>
+
+            <!-- Loading -->
+            <div *ngIf="isLoading" class="flex-1 flex justify-center items-center">
+                <div class="flex flex-col items-center">
+                    <mat-spinner diameter="48"></mat-spinner>
+                    <p class="mt-4 text-gray-500">Завантаження звітів...</p>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div *ngIf="!isLoading && revenueStats" class="flex flex-col flex-1 min-h-0">
+                
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 flex-shrink-0">
+                    
+                    <!-- Total Revenue -->
+                    <mat-card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-1">Загальний дохід</p>
+                                <p class="text-3xl font-bold text-green-600">
+                                    {{ revenueStats.totalRevenue | currency:'UAH':'symbol':'1.0-0':'uk' }}
+                                </p>
+                            </div>
+                            <mat-icon class="text-4xl text-green-500">account_balance_wallet</mat-icon>
+                        </div>
+                    </mat-card>
+
+                    <!-- Completed Appointments -->
+                    <mat-card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-1">Завершених записів</p>
+                                <p class="text-3xl font-bold text-blue-600">
+                                    {{ revenueStats.completedAppointments }}
+                                </p>
+                            </div>
+                            <mat-icon class="text-4xl text-blue-500">assignment_turned_in</mat-icon>
+                        </div>
+                    </mat-card>
+
+                    <!-- Average Check -->
+                    <mat-card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-1">Середній чек</p>
+                                <p class="text-3xl font-bold text-purple-600">
+                                    {{ revenueStats.averageCheck | currency:'UAH':'symbol':'1.0-0':'uk' }}
+                                </p>
+                            </div>
+                            <mat-icon class="text-4xl text-purple-500">receipt</mat-icon>
+                        </div>
+                    </mat-card>
+
+                </div>
+
+                <!-- Doctor Statistics -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
+                    
+                    <!-- Doctors Revenue Table -->
+                    <mat-card class="flex flex-col min-h-0">
+                        <div class="p-6 flex-shrink-0">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                                <mat-icon class="mr-2">people</mat-icon>
+                                Дохід по лікарях
+                            </h3>
+                        </div>
+                        
+                        <div class="flex-1 px-6 pb-6 min-h-0">
+                            <div class="h-full overflow-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b">
+                                            <th class="text-left py-2">Лікар</th>
+                                            <th class="text-right py-2">Записів</th>
+                                            <th class="text-right py-2">Дохід</th>
+                                            <th class="text-right py-2">Сер. чек</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let doctor of revenueStats.doctorStats" class="border-b border-gray-100">
+                                            <td class="py-3 pr-4">
+                                                <div class="font-medium">{{ doctor.doctorName }}</div>
+                                            </td>
+                                            <td class="text-right py-3">{{ doctor.completedAppointments }}</td>
+                                            <td class="text-right py-3 font-semibold text-green-600">
+                                                {{ doctor.totalRevenue | currency:'UAH':'symbol':'1.0-0':'uk' }}
+                                            </td>
+                                            <td class="text-right py-3">
+                                                {{ doctor.averageCheck | currency:'UAH':'symbol':'1.0-0':'uk' }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </mat-card>
+
+                    <!-- Top Services -->
+                    <mat-card class="flex flex-col min-h-0">
+                        <div class="p-6 flex-shrink-0">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center">
+                                <mat-icon class="mr-2">star</mat-icon>
+                                Топ послуги
+                            </h3>
+                        </div>
+                        
+                        <div class="flex-1 px-6 pb-6 min-h-0">
+                            <div class="h-full overflow-auto">
+                                <div *ngFor="let service of revenueStats.topServices" class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                                    <div class="flex-1">
+                                        <div class="font-medium">{{ service.name }}</div>
+                                        <div class="text-sm text-gray-600">{{ service.count }} разів</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-semibold text-green-600">
+                                            {{ service.revenue | currency:'UAH':'symbol':'1.0-0':'uk' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card>
+
+                </div>
+
+            </div>
+
+            <!-- No Data -->
+            <div *ngIf="!isLoading && revenueStats && revenueStats.completedAppointments === 0" 
+                 class="flex-1 flex items-center justify-center">
+                <div class="text-center">
+                    <mat-icon class="text-6xl text-gray-400 mb-4">assessment</mat-icon>
+                    <h2 class="text-2xl font-semibold text-gray-600 mb-2">Немає даних</h2>
+                    <p class="text-gray-500">За обраний період немає завершених записів</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div> 

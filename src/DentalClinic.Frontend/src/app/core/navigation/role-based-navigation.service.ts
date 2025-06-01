@@ -85,6 +85,12 @@ export class RoleBasedNavigationService
                 title: 'Користувачі',
                 type: 'basic',
                 link: '/users'
+            },
+            {
+                id: 'reports',
+                title: 'Фінансові звіти',
+                type: 'basic',
+                link: '/reports'
             }
         ];
 

@@ -94,7 +94,8 @@
 services,
 appointments, 
 patients,
-users {
+users,
+reports {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;

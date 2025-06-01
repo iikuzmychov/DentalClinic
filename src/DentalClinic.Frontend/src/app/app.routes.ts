@@ -82,6 +82,7 @@ export const appRoutes: Route[] = [
             {path: 'services', loadChildren: () => import('app/modules/admin/services/services.routes')},
             {path: 'patients', loadChildren: () => import('app/modules/admin/patients/patients.routes')},
             {path: 'users', canActivate: [adminGuard], loadChildren: () => import('app/modules/admin/users/users.routes')},
+            {path: 'reports', canActivate: [adminGuard], loadChildren: () => import('app/modules/admin/reports/reports.routes')},
         ]
     }
 ];

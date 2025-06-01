@@ -180,7 +180,7 @@ export class AuthService
             
             // Email
             if (decodedToken.email) user.email = decodedToken.email;
-
+            
             // Role from role field
             if (decodedToken.role) user.role = decodedToken.role;
             
