@@ -1,5 +1,5 @@
 import { NgIf, NgFor, DatePipe } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject, AfterViewInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -67,7 +67,7 @@ import { AppointmentDialogComponent } from './appointment-dialog/appointment-dia
         CalendarModule
     ]
 })
-export class AppointmentsComponent implements OnInit {
+export class AppointmentsComponent implements OnInit, AfterViewInit {
     
     // Services
     private readonly _apiClient = inject(ApiClientService);
@@ -95,8 +95,8 @@ export class AppointmentsComponent implements OnInit {
     // Config
     readonly weekStartsOn = 1; // Monday
     readonly hourSegments = 4; // 15-minute segments
-    readonly dayStartHour = 8;
-    readonly dayEndHour = 20;
+    readonly dayStartHour = 0; // Начало с 00:00
+    readonly dayEndHour = 24; // Конец в 24:00 (полночь)
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -104,6 +104,13 @@ export class AppointmentsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadFiltersData();
+    }
+
+    ngAfterViewInit(): void {
+        // Задержка чтобы убедиться что календарь отрендерился
+        setTimeout(() => {
+            this.scrollToCurrentTime();
+        }, 500);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -246,6 +253,13 @@ export class AppointmentsComponent implements OnInit {
     }
 
     /**
+     * Track by function for status items
+     */
+    trackByStatusId(index: number, item: any): string {
+        return item.status;
+    }
+
+    /**
      * Handle event click
      */
     onEventClick(event: AppointmentCalendarEvent): void {
@@ -264,7 +278,7 @@ export class AppointmentsComponent implements OnInit {
 
             dialogRef.afterClosed().subscribe(result => {
                 // Only show message and reload for actual actions, not dialog close
-                if (result && result.action && ['updated', 'completed', 'paid', 'cancelled'].includes(result.action)) {
+                if (result && result.action && ['updated', 'completed', 'paid', 'cancelled', 'deleted'].includes(result.action)) {
                     // Reload appointments after status change
                     this.loadAppointments();
                     
@@ -273,7 +287,8 @@ export class AppointmentsComponent implements OnInit {
                         updated: 'Запис оновлено успішно',
                         completed: 'Запис завершено',
                         paid: 'Запис сплачено',
-                        cancelled: 'Запис скасовано'
+                        cancelled: 'Запис скасовано',
+                        deleted: 'Запис видалено'
                     };
                     
                     this._snackBar.open(messages[result.action] || 'Статус змінено', 'OK', { duration: 3000 });
@@ -312,7 +327,7 @@ export class AppointmentsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             // Only show message and reload for actual actions, not dialog close
-            if (result && result.action && ['created', 'updated', 'completed', 'paid', 'cancelled'].includes(result.action)) {
+            if (result && result.action && ['created', 'updated', 'completed', 'paid', 'cancelled', 'deleted'].includes(result.action)) {
                 this.loadAppointments();
                 
                 const messages = {
@@ -320,7 +335,8 @@ export class AppointmentsComponent implements OnInit {
                     updated: 'Запис оновлено успішно',
                     completed: 'Запис завершено',
                     paid: 'Запис сплачено',
-                    cancelled: 'Запис скасовано'
+                    cancelled: 'Запис скасовано',
+                    deleted: 'Запис видалено'
                 };
                 
                 this._snackBar.open(messages[result.action] || 'Дію виконано', 'OK', { duration: 3000 });
@@ -388,13 +404,6 @@ export class AppointmentsComponent implements OnInit {
     }
 
     /**
-     * TrackBy function for status themes ngFor
-     */
-    trackByStatus(index: number, item: any): string {
-        return item.status;
-    }
-
-    /**
      * TrackBy function for dentists ngFor
      */
     trackByDentistId(index: number, item: ListUsersResponseItem): string {
@@ -418,4 +427,36 @@ export class AppointmentsComponent implements OnInit {
     // -----------------------------------------------------------------------------------------------------
     // @ Private methods
     // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Scroll calendar to current time
+     */
+    private scrollToCurrentTime(): void {
+        try {
+            const calendarElement = document.querySelector('.weekly-calendar .cal-time-events');
+            if (!calendarElement) {
+                return;
+            }
+
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinutes = now.getMinutes();
+            
+            // Calculate the scroll position
+            // Each hour takes approximately 60px (this may need adjustment based on your calendar styling)
+            const pixelsPerHour = 60;
+            const pixelsPerMinute = pixelsPerHour / 60;
+            
+            const scrollPosition = (currentHour * pixelsPerHour) + (currentMinutes * pixelsPerMinute);
+            
+            // Scroll to position with smooth behavior
+            calendarElement.scrollTo({
+                top: scrollPosition,
+                behavior: 'smooth'
+            });
+            
+        } catch (error) {
+            console.error('Error scrolling to current time:', error);
+        }
+    }
 } 

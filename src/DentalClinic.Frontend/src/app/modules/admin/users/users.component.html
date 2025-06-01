@@ -1,134 +1,132 @@
-<div class="flex flex-col flex-auto min-w-0">
+<div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
     <!-- Main -->
-    <div class="flex flex-auto p-6 sm:p-10">
-        <div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-col flex-1 p-6 sm:p-10 overflow-hidden">
 
-            <!-- Search, Role Filter and Add button -->
-            <div class="flex items-center justify-between mb-4 gap-4">
-                <div class="flex items-center gap-4 flex-1">
-                    <!-- Search -->
-                    <mat-form-field class="w-full max-w-md" appearance="outline" subscriptSizing="dynamic">
-                        <mat-label>Пошук користувачів</mat-label>
-                        <input matInput 
-                               [(ngModel)]="searchTerm" 
-                               (input)="onSearchInput()"
-                               placeholder="Введіть ім'я користувача">
-                        <mat-icon matPrefix>search</mat-icon>
-                    </mat-form-field>
-                    
-                    <!-- Role Filter -->
-                    <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
-                        <mat-label>Фільтр за роллю</mat-label>
-                        <mat-select [(value)]="selectedRole" (selectionChange)="onRoleFilterChange()">
-                            <mat-option *ngFor="let roleOption of roleOptions" [value]="roleOption.value">
-                                {{ roleOption.label }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matPrefix>filter_list</mat-icon>
-                    </mat-form-field>
-                </div>
+        <!-- Search, Role Filter and Add button -->
+        <div class="flex items-center justify-between mb-4 gap-4 flex-shrink-0">
+            <div class="flex items-center gap-4 flex-1">
+                <!-- Search -->
+                <mat-form-field class="w-full max-w-md" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Пошук користувачів</mat-label>
+                    <input matInput 
+                           [(ngModel)]="searchTerm" 
+                           (input)="onSearchInput()"
+                           placeholder="Введіть ім'я користувача">
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
                 
-                <!-- Add User Button -->
-                <button
-                    mat-flat-button
-                    [color]="'primary'"
-                    class="ml-4"
-                    (click)="addUser()">
-                    <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                    <span class="ml-2">Додати користувача</span>
-                </button>
+                <!-- Role Filter -->
+                <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Фільтр за роллю</mat-label>
+                    <mat-select [(value)]="selectedRole" (selectionChange)="onRoleFilterChange()">
+                        <mat-option *ngFor="let roleOption of roleOptions" [value]="roleOption.value">
+                            {{ roleOption.label }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>filter_list</mat-icon>
+                </mat-form-field>
             </div>
+            
+            <!-- Add User Button -->
+            <button
+                mat-flat-button
+                [color]="'primary'"
+                class="ml-4"
+                (click)="addUser()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2">Додати користувача</span>
+            </button>
+        </div>
 
-            <!-- Initial loading -->
-            <div *ngIf="isLoading && isInitialLoad" class="flex justify-center py-8">
+        <!-- Initial loading -->
+        <div *ngIf="isLoading && isInitialLoad" class="flex-1 flex justify-center items-center min-h-0">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+
+        <!-- Users table -->
+        <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative flex-1 min-h-0" 
+             [class.opacity-60]="isLoading">
+            
+            <!-- Loading overlay -->
+            <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
                 <mat-spinner diameter="40"></mat-spinner>
             </div>
-
-            <!-- Users table -->
-            <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative flex-auto" 
-                 [class.opacity-60]="isLoading">
-                
-                <!-- Loading overlay -->
-                <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
-                    <mat-spinner diameter="40"></mat-spinner>
+            
+            <!-- Table Container -->
+            <div class="flex flex-col h-full min-h-0">
+                <!-- Table Header -->
+                <div class="flex-none bg-gray-50 border-b">
+                    <div class="flex">
+                        <div class="flex-1 px-6 py-3">
+                            <span class="font-semibold text-secondary">ПІБ</span>
+                        </div>
+                        <div class="w-80 px-6 py-3">
+                            <span class="font-semibold text-secondary">Email</span>
+                        </div>
+                        <div class="w-64 px-6 py-3">
+                            <span class="font-semibold text-secondary">Телефон</span>
+                        </div>
+                        <div class="w-48 px-6 py-3">
+                            <span class="font-semibold text-secondary">Роль</span>
+                        </div>
+                        <div class="w-32 px-6 py-3">
+                            <span class="font-semibold text-secondary">Дії</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Table Container -->
-                <div class="flex flex-col flex-1 min-h-0">
-                    <!-- Table Header -->
-                    <div class="flex-none bg-gray-50 border-b">
-                        <div class="flex">
-                            <div class="flex-1 px-6 py-3">
-                                <span class="font-semibold text-secondary">ПІБ</span>
-                            </div>
-                            <div class="w-80 px-6 py-3">
-                                <span class="font-semibold text-secondary">Email</span>
-                            </div>
-                            <div class="w-64 px-6 py-3">
-                                <span class="font-semibold text-secondary">Телефон</span>
-                            </div>
-                            <div class="w-48 px-6 py-3">
-                                <span class="font-semibold text-secondary">Роль</span>
-                            </div>
-                            <div class="w-32 px-6 py-3">
-                                <span class="font-semibold text-secondary">Дії</span>
+                <!-- Scrollable Table Body -->
+                <div class="flex-1 overflow-y-auto min-h-0">
+                    <div *ngFor="let user of users; trackBy: trackByFn" 
+                         class="flex border-b hover:bg-gray-50 cursor-pointer"
+                         (click)="viewUser(user)">
+                        <div class="flex-1 px-6 py-3 flex items-center">
+                            <span class="font-medium">{{ getFullName(user) }}</span>
+                        </div>
+                        <div class="w-80 px-6 py-3 flex items-center">
+                            <span>{{ user.email || '—' }}</span>
+                        </div>
+                        <div class="w-64 px-6 py-3 flex items-center">
+                            <span>{{ user.phoneNumber || '—' }}</span>
+                        </div>
+                        <div class="w-48 px-6 py-3 flex items-center">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium" 
+                                  [class]="getRoleClass(user.role)">
+                                {{ getRoleLabel(user.role) }}
+                            </span>
+                        </div>
+                        <div class="w-32 px-6 py-3 flex items-center">
+                            <div class="flex items-center space-x-1">
+                                <button
+                                    mat-icon-button
+                                    [matTooltip]="'Редагувати'"
+                                    [disabled]="isLoading"
+                                    (click)="editUser($event, user)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                </button>
+                                <button
+                                    mat-icon-button
+                                    [matTooltip]="'Видалити'"
+                                    [color]="'warn'"
+                                    [disabled]="isLoading"
+                                    (click)="deleteUser($event, user)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Scrollable Table Body -->
-                    <div class="flex-1 overflow-y-auto">
-                        <div *ngFor="let user of users; trackBy: trackByFn" 
-                             class="flex border-b hover:bg-gray-50 cursor-pointer"
-                             (click)="viewUser(user)">
-                            <div class="flex-1 px-6 py-3 flex items-center">
-                                <span class="font-medium">{{ getFullName(user) }}</span>
-                            </div>
-                            <div class="w-80 px-6 py-3 flex items-center">
-                                <span>{{ user.email || '—' }}</span>
-                            </div>
-                            <div class="w-64 px-6 py-3 flex items-center">
-                                <span>{{ user.phoneNumber || '—' }}</span>
-                            </div>
-                            <div class="w-48 px-6 py-3 flex items-center">
-                                <span class="px-2 py-1 rounded-full text-xs font-medium" 
-                                      [class]="getRoleClass(user.role)">
-                                    {{ getRoleLabel(user.role) }}
-                                </span>
-                            </div>
-                            <div class="w-32 px-6 py-3 flex items-center">
-                                <div class="flex items-center space-x-1">
-                                    <button
-                                        mat-icon-button
-                                        [matTooltip]="'Редагувати'"
-                                        [disabled]="isLoading"
-                                        (click)="editUser($event, user)">
-                                        <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
-                                    </button>
-                                    <button
-                                        mat-icon-button
-                                        [matTooltip]="'Видалити'"
-                                        [color]="'warn'"
-                                        [disabled]="isLoading"
-                                        (click)="deleteUser($event, user)">
-                                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Empty state -->
-                        <div *ngIf="users.length === 0 && !isLoading" class="flex flex-col items-center justify-center h-full min-h-64">
-                            <mat-icon [svgIcon]="'heroicons_outline:users'" class="text-gray-400 w-16 h-16 mb-4"></mat-icon>
-                            <p class="text-gray-500 text-lg font-medium">Користувачів не знайдено</p>
-                            <p class="text-gray-400 mt-2 text-center">
-                                {{ (lastCompletedSearchTerm && lastCompletedSearchTerm.trim()) || selectedRole ? 'Спробуйте змінити критерії пошуку' : 'Список користувачів порожній' }}
-                            </p>
-                        </div>
+                    <!-- Empty state -->
+                    <div *ngIf="users.length === 0 && !isLoading" class="flex flex-col items-center justify-center h-full min-h-64">
+                        <mat-icon [svgIcon]="'heroicons_outline:users'" class="text-gray-400 w-16 h-16 mb-4"></mat-icon>
+                        <p class="text-gray-500 text-lg font-medium">Користувачів не знайдено</p>
+                        <p class="text-gray-400 mt-2 text-center">
+                            {{ (lastCompletedSearchTerm && lastCompletedSearchTerm.trim()) || selectedRole ? 'Спробуйте змінити критерії пошуку' : 'Список користувачів порожній' }}
+                        </p>
                     </div>
                 </div>
-
+                
                 <!-- Footer with count -->
                 <div *ngIf="users.length > 0" class="flex-none border-t px-3 py-1 bg-gray-50">
                     <div class="text-secondary text-sm">
@@ -137,6 +135,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
 </div> 

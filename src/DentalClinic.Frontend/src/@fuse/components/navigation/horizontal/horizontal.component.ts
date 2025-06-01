@@ -7,6 +7,7 @@ import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { FuseHorizontalNavigationBasicItemComponent } from './components/basic/basic.component';
 import { FuseHorizontalNavigationBranchItemComponent } from './components/branch/branch.component';
+import { FuseHorizontalNavigationDividerItemComponent } from './components/divider/divider.component';
 import { FuseHorizontalNavigationSpacerItemComponent } from './components/spacer/spacer.component';
 
 @Component({
@@ -18,7 +19,7 @@ import { FuseHorizontalNavigationSpacerItemComponent } from './components/spacer
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs       : 'fuseHorizontalNavigation',
     standalone     : true,
-    imports        : [NgFor, NgIf, FuseHorizontalNavigationBasicItemComponent, FuseHorizontalNavigationBranchItemComponent, FuseHorizontalNavigationSpacerItemComponent],
+    imports        : [NgFor, NgIf, FuseHorizontalNavigationBasicItemComponent, FuseHorizontalNavigationBranchItemComponent, FuseHorizontalNavigationDividerItemComponent, FuseHorizontalNavigationSpacerItemComponent],
 })
 export class FuseHorizontalNavigationComponent implements OnChanges, OnInit, OnDestroy
 {

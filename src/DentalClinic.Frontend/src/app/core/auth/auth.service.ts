@@ -79,12 +79,9 @@ export class AuthService
         return from(this._apiClient.client.api.auth.login.post(loginRequest)).pipe(
             switchMap((response: LoginResponse) =>
             {
-                console.log('Login response:', response);
-                
                 // Store the access token in the local storage
                 if (response.token) {
                     this.accessToken = response.token;
-                    console.log('Stored token:', response.token);
 
                     // Set the authenticated flag to true
                     this._authenticated = true;
@@ -143,19 +140,13 @@ export class AuthService
      */
     check(): Observable<any>
     {
-        console.log('AuthService.check() called');
-        console.log('Access token:', this.accessToken);
-        console.log('Token expired:', this.accessToken ? AuthUtils.isTokenExpired(this.accessToken) : 'No token');
-        
         // Check if the access token exists and is not expired
         if (!this.accessToken || AuthUtils.isTokenExpired(this.accessToken)) {
-            console.log('Authentication failed - no token or token expired');
             this._authenticated = false;
             return of(false);
         }
 
         // If the access token exists and is valid, set authenticated flag and return true
-        console.log('Authentication successful');
         this._authenticated = true;
         
         // Extract user data from token if not already set
@@ -179,7 +170,6 @@ export class AuthService
         try {
             // Decode the token to get user data
             const decodedToken = this._decodeJwtToken(token);
-            console.log('Decoded token:', decodedToken);
 
             // Extract user information from token
             const user: any = {};
@@ -190,12 +180,26 @@ export class AuthService
             // Email
             if (decodedToken.email) user.email = decodedToken.email;
             
-            // Name - build full name from given_name and family_name
+            // Name - build full name from all available name fields
             let fullName = '';
             const nameParts = [];
             
-            if (decodedToken.given_name) nameParts.push(decodedToken.given_name);
-            if (decodedToken.family_name) nameParts.push(decodedToken.family_name);
+            // Try different name field combinations
+            // Ukrainian format: lastName firstName surname
+            if (decodedToken.lastName) nameParts.push(decodedToken.lastName);
+            if (decodedToken.firstName) nameParts.push(decodedToken.firstName);
+            if (decodedToken.surname) nameParts.push(decodedToken.surname);
+            
+            // Fallback to standard JWT claims if Ukrainian fields not available
+            if (nameParts.length === 0) {
+                if (decodedToken.family_name) nameParts.push(decodedToken.family_name);
+                if (decodedToken.given_name) nameParts.push(decodedToken.given_name);
+            }
+            
+            // Fallback to name field if available
+            if (nameParts.length === 0 && decodedToken.name) {
+                nameParts.push(decodedToken.name);
+            }
             
             if (nameParts.length > 0) {
                 fullName = nameParts.join(' ');
@@ -207,10 +211,7 @@ export class AuthService
             
             // Only set user if we have at least some meaningful data
             if (user.id || user.email || user.name) {
-                console.log('User extracted from token:', user);
                 this._userService.user = user;
-            } else {
-                console.log('No meaningful user data found in token');
             }
         } catch (error) {
             console.error('Error decoding token:', error);

@@ -36,30 +36,30 @@ export class CalendarService {
     private readonly statusThemes: Record<AppointmentStatus, StatusTheme> = {
         'Scheduled': {
             primary: '#1976d2',
-            secondary: '#e3f2fd',
+            secondary: '#1976d2',
             textColor: '#ffffff',
             badgeClass: 'bg-blue-500',
             displayName: 'Запланований'
         },
         'Completed': {
             primary: '#4caf50',
-            secondary: '#e8f5e8',
+            secondary: '#4caf50',
             textColor: '#ffffff', 
             badgeClass: 'bg-green-500',
             displayName: 'Завершений'
         },
         'Cancelled': {
             primary: '#f44336',
-            secondary: '#ffebee',
+            secondary: '#f44336',
             textColor: '#ffffff',
             badgeClass: 'bg-red-500', 
             displayName: 'Скасований'
         },
         'Paid': {
-            primary: '#ff9800',
-            secondary: '#fff3e0',
+            primary: '#374151',
+            secondary: '#374151',
             textColor: '#ffffff',
-            badgeClass: 'bg-orange-500',
+            badgeClass: 'bg-gray-700',
             displayName: 'Сплачений'
         }
     };
@@ -397,10 +397,6 @@ export class CalendarService {
         
         // Doctor name (secondary info)
         lines.push(`👨‍⚕️ ${this.shortenName(dentistName)}`);
-        
-        // Status (always show)
-        const statusTheme = this.getStatusTheme(status);
-        lines.push(`📋 ${statusTheme.displayName}`);
         
         // Price info for completed/paid appointments
         if ((status === 'Completed' || status === 'Paid') && services && services.length > 0) {

@@ -1,145 +1,156 @@
-<div class="flex flex-col flex-auto min-w-0">
+<div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
     <!-- Main Content -->
-    <div class="flex flex-auto p-6 sm:p-10">
-        <div class="flex flex-col flex-auto w-full">
-
-            <!-- Calendar Controls with Filters -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
+    <div class="flex flex-col flex-1 p-6 sm:p-10 overflow-hidden">
+        
+        <!-- Calendar Controls with Filters -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 space-y-4 sm:space-y-0 flex-shrink-0">
+            
+            <!-- Navigation -->
+            <div class="flex items-center space-x-3">
+                <button
+                    mat-icon-button
+                    (click)="previousWeek()"
+                    [matTooltip]="'Попередній тиждень'"
+                    [disabled]="isLoading">
+                    <mat-icon [svgIcon]="'heroicons_outline:chevron-left'"></mat-icon>
+                </button>
                 
-                <!-- Navigation -->
-                <div class="flex items-center space-x-3">
-                    <button
-                        mat-icon-button
-                        (click)="previousWeek()"
-                        [matTooltip]="'Попередній тиждень'"
-                        [disabled]="isLoading">
-                        <mat-icon [svgIcon]="'heroicons_outline:chevron-left'"></mat-icon>
-                    </button>
-                    
-                    <button
-                        mat-stroked-button
-                        (click)="today()"
-                        [disabled]="isLoading"
-                        class="px-4">
-                        Поточний тиждень
-                    </button>
-                    
-                    <button
-                        mat-icon-button
-                        (click)="nextWeek()"
-                        [matTooltip]="'Наступний тиждень'"
-                        [disabled]="isLoading">
-                        <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
-                    </button>
+                <button
+                    mat-stroked-button
+                    (click)="today()"
+                    [disabled]="isLoading"
+                    class="px-4">
+                    Поточний тиждень
+                </button>
+                
+                <button
+                    mat-icon-button
+                    (click)="nextWeek()"
+                    [matTooltip]="'Наступний тиждень'"
+                    [disabled]="isLoading">
+                    <mat-icon [svgIcon]="'heroicons_outline:chevron-right'"></mat-icon>
+                </button>
 
-                    <!-- Current Week Range Display -->
-                    <div class="ml-4">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            {{ getCurrentWeekRange() }}
-                        </h2>
-                    </div>
-                </div>
-
-                <!-- Filters and Add Button -->
-                <div class="flex items-center gap-4">
-                    
-                    <!-- Dentist Filter -->
-                    <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
-                        <mat-label>Лікар</mat-label>
-                        <mat-select 
-                            [(value)]="selectedDentistId" 
-                            (selectionChange)="onDentistFilterChange()"
-                            [disabled]="isLoading">
-                            <mat-option [value]="null">Всі лікарі</mat-option>
-                            <mat-option 
-                                *ngFor="let dentist of dentists; trackBy: trackByDentistId" 
-                                [value]="dentist.id">
-                                {{ getDentistDisplayName(dentist) }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matPrefix>person</mat-icon>
-                    </mat-form-field>
-
-                    <!-- Patient Filter -->
-                    <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
-                        <mat-label>Пацієнт</mat-label>
-                        <mat-select 
-                            [(value)]="selectedPatientId" 
-                            (selectionChange)="onPatientFilterChange()"
-                            [disabled]="isLoading">
-                            <mat-option [value]="null">Всі пацієнти</mat-option>
-                            <mat-option 
-                                *ngFor="let patient of patients; trackBy: trackByPatientId" 
-                                [value]="patient.id">
-                                {{ getPatientDisplayName(patient) }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matPrefix>people</mat-icon>
-                    </mat-form-field>
-
-                    <!-- Add Appointment Button -->
-                    <button
-                        mat-flat-button
-                        [color]="'primary'"
-                        (click)="addAppointment()">
-                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                        <span class="ml-2">Новий запис</span>
-                    </button>
-                    
-                </div>
-
-            </div>
-
-            <!-- Loading -->
-            <div *ngIf="isLoading && isInitialLoad" class="flex justify-center py-12">
-                <div class="flex flex-col items-center">
-                    <mat-spinner diameter="48"></mat-spinner>
-                    <p class="mt-4 text-gray-500">Завантаження записів...</p>
+                <!-- Current Week Range Display -->
+                <div class="ml-4">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        {{ getCurrentWeekRange() }}
+                    </h2>
                 </div>
             </div>
 
-            <!-- Weekly Calendar -->
-            <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative" 
-                 [class.opacity-60]="isLoading">
+            <!-- Filters and Add Button -->
+            <div class="flex items-center gap-4">
                 
-                <!-- Loading overlay -->
-                <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
-                    <mat-spinner diameter="40"></mat-spinner>
-                </div>
+                <!-- Dentist Filter -->
+                <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Лікар</mat-label>
+                    <mat-select 
+                        [(value)]="selectedDentistId" 
+                        (selectionChange)="onDentistFilterChange()"
+                        [disabled]="isLoading">
+                        <mat-option [value]="null">Всі лікарі</mat-option>
+                        <mat-option 
+                            *ngFor="let dentist of dentists; trackBy: trackByDentistId" 
+                            [value]="dentist.id">
+                            {{ getDentistDisplayName(dentist) }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>person</mat-icon>
+                </mat-form-field>
 
-                <!-- Calendar Widget -->
-                <div class="flex-1">
-                    <mwl-calendar-week-view
-                        [viewDate]="viewDate"
-                        [events]="calendarEvents"
-                        [weekStartsOn]="weekStartsOn"
-                        [hourSegments]="hourSegments"
-                        [dayStartHour]="dayStartHour"
-                        [dayEndHour]="dayEndHour"
-                        [precision]="'minutes'"
-                        [weekendDays]="[0, 6]"
-                        [eventSnapSize]="15"
-                        (eventClicked)="onEventClick($event.event)"
-                        (eventTimesChanged)="onEventTimeChange($event)"
-                        (eventResized)="onEventResize($event)"
-                        class="weekly-calendar">
-                        
-                        <!-- Custom event template -->
-                        <ng-template
-                            #weekEventTemplate
-                            let-weekEvent="weekEvent"
-                            let-locale="locale">
-                            <div class="cal-event h-full p-1 text-xs leading-tight overflow-hidden" [innerHTML]="weekEvent.event.title">
-                            </div>
-                        </ng-template>
-                        
-                    </mwl-calendar-week-view>
-                </div>
+                <!-- Patient Filter -->
+                <mat-form-field class="min-w-48" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Пацієнт</mat-label>
+                    <mat-select 
+                        [(value)]="selectedPatientId" 
+                        (selectionChange)="onPatientFilterChange()"
+                        [disabled]="isLoading">
+                        <mat-option [value]="null">Всі пацієнти</mat-option>
+                        <mat-option 
+                            *ngFor="let patient of patients; trackBy: trackByPatientId" 
+                            [value]="patient.id">
+                            {{ getPatientDisplayName(patient) }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix>people</mat-icon>
+                </mat-form-field>
 
+                <!-- Add Appointment Button -->
+                <button
+                    mat-flat-button
+                    [color]="'primary'"
+                    (click)="addAppointment()">
+                    <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                    <span class="ml-2">Новий запис</span>
+                </button>
+                
             </div>
 
         </div>
+
+        <!-- Loading -->
+        <div *ngIf="isLoading && isInitialLoad" class="flex-1 flex justify-center items-center">
+            <div class="flex flex-col items-center">
+                <mat-spinner diameter="48"></mat-spinner>
+                <p class="mt-4 text-gray-500">Завантаження записів...</p>
+            </div>
+        </div>
+
+        <!-- Weekly Calendar -->
+        <div *ngIf="!isInitialLoad" class="flex-1 bg-card shadow rounded-2xl overflow-hidden relative flex flex-col" 
+             [class.opacity-60]="isLoading">
+            
+            <!-- Loading overlay -->
+            <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+
+            <!-- Calendar Widget -->
+            <div class="flex-1 overflow-hidden">
+                <mwl-calendar-week-view
+                    [viewDate]="viewDate"
+                    [events]="calendarEvents"
+                    [weekStartsOn]="weekStartsOn"
+                    [hourSegments]="hourSegments"
+                    [dayStartHour]="dayStartHour"
+                    [dayEndHour]="dayEndHour"
+                    [precision]="'minutes'"
+                    [weekendDays]="[0, 6]"
+                    [eventSnapSize]="15"
+                    (eventClicked)="onEventClick($event.event)"
+                    (eventTimesChanged)="onEventTimeChange($event)"
+                    (eventResized)="onEventResize($event)"
+                    class="weekly-calendar h-full">
+                    
+                    <!-- Custom event template -->
+                    <ng-template
+                        #weekEventTemplate
+                        let-weekEvent="weekEvent"
+                        let-locale="locale">
+                        <div class="cal-event h-full p-1 text-xs leading-tight overflow-hidden" [innerHTML]="weekEvent.event.title">
+                        </div>
+                    </ng-template>
+                    
+                </mwl-calendar-week-view>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="flex-none border-t bg-gray-50 px-6 py-3">
+                <div class="flex items-center justify-center gap-6 flex-wrap">
+                    <span class="text-sm font-medium text-gray-600 mr-2">Статуси:</span>
+                    <div *ngFor="let statusInfo of getStatusThemes(); trackBy: trackByStatusId" 
+                         class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full flex-shrink-0"
+                             [style.background-color]="statusInfo.theme.primary"></div>
+                        <span class="text-sm text-gray-700">{{ statusInfo.theme.displayName }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
 </div> 

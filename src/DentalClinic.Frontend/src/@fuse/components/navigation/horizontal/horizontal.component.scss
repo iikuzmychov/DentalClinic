@@ -42,19 +42,21 @@ fuse-horizontal-navigation {
             .fuse-horizontal-navigation-item-active-forced {
 
                 .fuse-horizontal-navigation-item-title {
-                    @apply text-primary #{'!important'};
+                    @apply text-primary;
+                    color: var(--fuse-primary) !important;
                 }
 
                 .fuse-horizontal-navigation-item-subtitle {
-                    @apply text-primary-400 #{'!important'};
-
+                    @apply text-primary-400;
+                    
                     .dark & {
-                        @apply text-primary-600 #{'!important'};
+                        @apply text-primary-600;
                     }
                 }
 
                 .fuse-horizontal-navigation-item-icon {
-                    @apply text-primary #{'!important'};
+                    @apply text-primary;
+                    color: var(--fuse-primary) !important;
                 }
             }
         }
@@ -67,6 +69,22 @@ fuse-horizontal-navigation {
 
                 .fuse-horizontal-navigation-item-wrapper {
                     @apply bg-hover;
+                }
+            }
+        }
+
+        /* Divider */
+        fuse-horizontal-navigation-divider-item {
+            margin: 0 4px;
+
+            .fuse-horizontal-navigation-item-wrapper {
+                width: 1px;
+                height: 20px;
+                background-color: rgba(0, 0, 0, 0.4);
+                border-radius: 0.5px;
+                
+                .dark & {
+                    background-color: rgba(255, 255, 255, 0.5);
                 }
             }
         }
@@ -117,19 +135,21 @@ fuse-horizontal-navigation {
         .fuse-horizontal-navigation-item-active-forced {
 
             .fuse-horizontal-navigation-item-title {
-                @apply text-primary #{'!important'};
+                @apply text-primary;
+                color: var(--fuse-primary) !important;
             }
 
             .fuse-horizontal-navigation-item-subtitle {
-                @apply text-primary-400 #{'!important'};
+                @apply text-primary-400;
 
                 .dark & {
-                    @apply text-primary-600 #{'!important'};
+                    @apply text-primary-600;
                 }
             }
 
             .fuse-horizontal-navigation-item-icon {
-                @apply text-primary #{'!important'};
+                @apply text-primary;
+                color: var(--fuse-primary) !important;
             }
         }
     }

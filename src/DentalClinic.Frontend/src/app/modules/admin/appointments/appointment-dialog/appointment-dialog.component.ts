@@ -28,6 +28,7 @@ import {
     ListServicesResponseItem
 } from 'app/api/models';
 import { AppointmentCompletionDialogComponent } from '../appointment-completion-dialog/appointment-completion-dialog.component';
+import { DeleteConfirmationDialogComponent } from '../../services/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 export interface AppointmentDialogData {
     mode: 'add' | 'edit' | 'view';
@@ -217,7 +218,7 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                         </mat-error>
                             <mat-error *ngIf="appointmentForm.get('date')?.hasError('matDatepickerMin')">
                                 Неможливо обрати минулу дату
-                            </mat-error>
+                        </mat-error>
                     </mat-form-field>
 
                     <!-- Time -->
@@ -381,6 +382,18 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                                     <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
                                     <span class="ml-2">Скасувати</span>
                                 </button>
+                                
+                                <!-- Delete Button - only for Cancelled -->
+                                <button
+                                    *ngIf="canDelete()"
+                                    mat-flat-button
+                                    color="warn"
+                                    type="button"
+                                    [disabled]="isLoading"
+                                    (click)="deleteAppointment()">
+                                    <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    <span class="ml-2">Видалити</span>
+                                </button>
                             </div>
                             
                             <!-- Close and Edit -->
@@ -487,7 +500,7 @@ export class AppointmentDialogComponent implements OnInit {
      */
     loadData(): void {
         this.isLoadingData = true;
-
+        
         if (this.data.appointment && (this.data.mode === 'edit' || this.data.mode === 'view')) {
             // First load full appointment details, then load specific patient/dentist and general lists
             this.loadFullAppointmentDetails().then(() => {
@@ -890,6 +903,13 @@ export class AppointmentDialogComponent implements OnInit {
     }
 
     /**
+     * Check if appointment can be deleted
+     */
+    canDelete(): boolean {
+        return this.currentStatus === 'Cancelled';
+    }
+
+    /**
      * Check if appointment is readonly (cannot be edited at all)
      */
     isAppointmentReadonly(): boolean {
@@ -932,5 +952,40 @@ export class AppointmentDialogComponent implements OnInit {
      */
     toggleServicesExpansion(): void {
         this.isServicesExpanded = !this.isServicesExpanded;
+    }
+
+    /**
+     * Delete appointment
+     */
+    deleteAppointment(): void {
+        if (!this.data.appointment?.id) return;
+        
+        const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+            width: '400px',
+            maxWidth: '95vw',
+            data: {
+                title: 'Видалити запис',
+                message: 'Ви впевнені, що хочете видалити цей запис? Цю дію неможливо відмінити.',
+                confirmText: 'Видалити',
+                cancelText: 'Скасувати'
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === true) {
+                this.isLoading = true;
+                
+                from(this.apiClient.client.api.appointments.byId(this.data.appointment.id).delete())
+                    .pipe(finalize(() => this.isLoading = false))
+                    .subscribe({
+                        next: () => {
+                            this._dialogRef.close({ action: 'deleted' });
+                        },
+                        error: (error) => {
+                            console.error('Error deleting appointment:', error);
+                        }
+                    });
+            }
+        });
     }
 } 

@@ -21,6 +21,14 @@
                     [name]="name"></fuse-horizontal-navigation-branch-item>
             </ng-container>
 
+            <!-- Divider -->
+            <ng-container *ngIf="item.type === 'divider'">
+                <fuse-horizontal-navigation-divider-item
+                    class="fuse-horizontal-navigation-menu-item"
+                    [item]="item"
+                    [name]="name"></fuse-horizontal-navigation-divider-item>
+            </ng-container>
+
             <!-- Spacer -->
             <ng-container *ngIf="item.type === 'spacer'">
                 <fuse-horizontal-navigation-spacer-item

@@ -32,7 +32,122 @@
     background: white;
 }
 
+/* Стили для текущего дня */
+.weekly-calendar .cal-today {
+    background-color: #4f47e6 !important; /* Яркий индиго как кнопки */
+    color: white !important;
+}
+
+.weekly-calendar .cal-header .cal-today {
+    background-color: #4f47e6 !important; /* Индиго как кнопки */
+    color: white !important;
+    border-radius: 4px;
+}
+
+/* Белый текст для элементов внутри заголовка текущего дня */
+.weekly-calendar .cal-header .cal-today * {
+    color: white !important;
+}
+
+/* Прокрутка для календаря - несколько вариантов */
 .weekly-calendar .cal-time-events {
+    overflow-y: auto !important;
+}
+
+.weekly-calendar .cal-week-view .cal-time-events {
+    overflow-y: auto !important;
+}
+
+.weekly-calendar .cal-week-view {
     overflow-y: auto;
-    max-height: 280px;
-} 
+}
+
+/* Если прокрутка в самом контейнере */
+.weekly-calendar {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.weekly-calendar .cal-week-view {
+    height: 100%;
+}
+
+/* ИСПРАВЛЕНИЕ КОЛОНОК ДНЕЙ */
+/* Колонки дней должны растягиваться на всю высоту */
+.weekly-calendar .cal-day-column {
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+/* Контейнер для колонок также должен быть полной высоты */
+.weekly-calendar .cal-day-columns {
+    height: 100% !important;
+    min-height: 100% !important;
+}
+
+/* Основная область времени должна заполнять весь контейнер */
+.weekly-calendar .cal-time-events .cal-day-columns {
+    height: 100% !important;
+}
+
+/* КЛЮЧЕВОЕ ПРАВИЛО: принудительно делаем компоненты flex контейнерами */
+services,
+appointments, 
+patients,
+users {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+/* Глобальные стили для правильного поведения flex контейнеров */
+.flex-auto, .flex-1 {
+    min-height: 0; /* Позволяет flex элементам сжиматься */
+}
+
+/* Angular Material Table overflow fix */
+.mat-table-container {
+    overflow: auto !important;
+    max-height: none !important;
+}
+
+/* -----------------------------------------------------------------------------------------------------
+ * @ Calendar Events - Force White Text
+ * ----------------------------------------------------------------------------------------------------- */
+
+/* Принудительно белый текст для всех событий календаря */
+.cal-event,
+.cal-event *,
+.cal-event span,
+.cal-event div,
+.cal-event p,
+.cal-event a {
+    color: white !important;
+}
+
+/* Специфично для Angular Calendar компонента */
+mwl-calendar-week-view .cal-event,
+mwl-calendar-week-view .cal-event *,
+mwl-calendar-week-view .cal-event span,
+mwl-calendar-week-view .cal-event div {
+    color: white !important;
+}
+
+/* Еще более специфично */
+mwl-calendar-week-view .cal-week-view .cal-event,
+mwl-calendar-week-view .cal-week-view .cal-event * {
+    color: white !important;
+}
+
+/* Максимально агрессивно для календаря в appointments компоненте */
+appointments .cal-event,
+appointments .cal-event *,
+appointments .cal-event span,
+appointments .cal-event div {
+    color: white !important;
+}
+
+/* -----------------------------------------------------------------------------------------------------
+ * @ Tailwind directives
+ * ----------------------------------------------------------------------------------------------------- */ 

@@ -1,110 +1,109 @@
-<div class="flex flex-col flex-auto min-w-0">
+<div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
     <!-- Main -->
-    <div class="flex flex-auto p-6 sm:p-10">
-        <div class="flex flex-col flex-auto w-full">
+    <div class="flex flex-col flex-1 p-6 sm:p-10 overflow-hidden">
 
-            <!-- Search and Add button -->
-            <div class="flex items-center justify-between mb-4 gap-4">
-                <mat-form-field class="w-full max-w-md" appearance="outline" subscriptSizing="dynamic">
-                    <mat-label>Пошук пацієнтів</mat-label>
-                    <input matInput 
-                           [(ngModel)]="searchTerm" 
-                           (input)="onSearchInput()"
-                           placeholder="Введіть ім'я пацієнта">
-                    <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
-                
-                <button
-                    mat-flat-button
-                    [color]="'primary'"
-                    (click)="addPatient()"
-                    class="ml-4">
-                    <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                    <span class="ml-2">Додати пацієнта</span>
-                </button>
-            </div>
+        <!-- Search and Add button -->
+        <div class="flex items-center justify-between mb-4 gap-4 flex-shrink-0">
+            <mat-form-field class="w-full max-w-md" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Пошук пацієнтів</mat-label>
+                <input matInput 
+                       [(ngModel)]="searchTerm" 
+                       (input)="onSearchInput()"
+                       placeholder="Введіть ім'я пацієнта">
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            
+            <button
+                mat-flat-button
+                [color]="'primary'"
+                (click)="addPatient()"
+                class="ml-4">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2">Додати пацієнта</span>
+            </button>
+        </div>
 
-            <!-- Initial loading -->
-            <div *ngIf="isLoading && isInitialLoad" class="flex justify-center py-8">
+        <!-- Initial loading -->
+        <div *ngIf="isLoading && isInitialLoad" class="flex-1 flex justify-center items-center min-h-0">
+            <mat-spinner diameter="40"></mat-spinner>
+        </div>
+
+        <!-- Patients table -->
+        <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative flex-1 min-h-0 max-h-full" 
+             [class.opacity-60]="isLoading"
+             style="max-height: calc(100vh - 200px);">
+            
+            <!-- Loading overlay -->
+            <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
                 <mat-spinner diameter="40"></mat-spinner>
             </div>
-
-            <!-- Patients table -->
-            <div *ngIf="!isInitialLoad" class="flex flex-col bg-card shadow rounded-2xl overflow-hidden relative flex-auto" 
-                 [class.opacity-60]="isLoading">
-                
-                <!-- Loading overlay -->
-                <div *ngIf="isLoading" class="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center z-10">
-                    <mat-spinner diameter="40"></mat-spinner>
+            
+            <!-- Table Container -->
+            <div class="flex flex-col h-full min-h-0 max-h-full">
+                <!-- Table Header -->
+                <div class="flex-none bg-gray-50 border-b">
+                    <div class="flex">
+                        <div class="flex-1 px-6 py-3">
+                            <span class="font-semibold text-secondary">ПІБ</span>
+                        </div>
+                        <div class="w-80 px-6 py-3">
+                            <span class="font-semibold text-secondary">Email</span>
+                        </div>
+                        <div class="w-64 px-6 py-3">
+                            <span class="font-semibold text-secondary">Телефон</span>
+                        </div>
+                        <div class="w-32 px-6 py-3">
+                            <span class="font-semibold text-secondary">Дії</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Table Container -->
-                <div class="flex flex-col flex-1 min-h-0">
-                    <!-- Table Header -->
-                    <div class="flex-none bg-gray-50 border-b">
-                        <div class="flex">
-                            <div class="flex-1 px-6 py-3">
-                                <span class="font-semibold text-secondary">ПІБ</span>
-                            </div>
-                            <div class="w-80 px-6 py-3">
-                                <span class="font-semibold text-secondary">Email</span>
-                            </div>
-                            <div class="w-64 px-6 py-3">
-                                <span class="font-semibold text-secondary">Телефон</span>
-                            </div>
-                            <div class="w-32 px-6 py-3">
-                                <span class="font-semibold text-secondary">Дії</span>
+                <!-- Scrollable Table Body -->
+                <div class="flex-1 overflow-y-auto min-h-0 max-h-full">
+                    <div *ngFor="let patient of patients; trackBy: trackByFn" 
+                         class="flex border-b hover:bg-gray-50 cursor-pointer"
+                         (click)="viewPatient(patient)">
+                        <div class="flex-1 px-6 py-3 flex items-center">
+                            <span class="font-medium">{{ getFullName(patient) }}</span>
+                        </div>
+                        <div class="w-80 px-6 py-3 flex items-center">
+                            <span>{{ patient.email || '—' }}</span>
+                        </div>
+                        <div class="w-64 px-6 py-3 flex items-center">
+                            <span>{{ patient.phoneNumber || '—' }}</span>
+                        </div>
+                        <div class="w-32 px-6 py-3 flex items-center">
+                            <div class="flex items-center space-x-1">
+                                <button
+                                    mat-icon-button
+                                    [matTooltip]="'Редагувати'"
+                                    [disabled]="isLoading"
+                                    (click)="editPatient($event, patient)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
+                                </button>
+                                <button
+                                    mat-icon-button
+                                    [matTooltip]="'Видалити'"
+                                    [color]="'warn'"
+                                    [disabled]="isLoading"
+                                    (click)="deletePatient($event, patient)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                </button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Scrollable Table Body -->
-                    <div class="flex-1 overflow-y-auto">
-                        <div *ngFor="let patient of patients; trackBy: trackByFn" 
-                             class="flex border-b hover:bg-gray-50 cursor-pointer"
-                             (click)="viewPatient(patient)">
-                            <div class="flex-1 px-6 py-3 flex items-center">
-                                <span class="font-medium">{{ getFullName(patient) }}</span>
-                            </div>
-                            <div class="w-80 px-6 py-3 flex items-center">
-                                <span>{{ patient.email || '—' }}</span>
-                            </div>
-                            <div class="w-64 px-6 py-3 flex items-center">
-                                <span>{{ patient.phoneNumber || '—' }}</span>
-                            </div>
-                            <div class="w-32 px-6 py-3 flex items-center">
-                                <div class="flex items-center space-x-1">
-                                    <button
-                                        mat-icon-button
-                                        [matTooltip]="'Редагувати'"
-                                        [disabled]="isLoading"
-                                        (click)="editPatient($event, patient)">
-                                        <mat-icon [svgIcon]="'heroicons_outline:pencil'"></mat-icon>
-                                    </button>
-                                    <button
-                                        mat-icon-button
-                                        [matTooltip]="'Видалити'"
-                                        [color]="'warn'"
-                                        [disabled]="isLoading"
-                                        (click)="deletePatient($event, patient)">
-                                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Empty state -->
-                        <div *ngIf="patients.length === 0 && !isLoading" class="flex flex-col items-center justify-center h-full min-h-64">
-                            <mat-icon [svgIcon]="'heroicons_outline:users'" class="text-gray-400 w-16 h-16 mb-4"></mat-icon>
-                            <p class="text-gray-500 text-lg font-medium">Пацієнтів не знайдено</p>
-                            <p class="text-gray-400 mt-2 text-center">
-                                {{ lastCompletedSearchTerm && lastCompletedSearchTerm.trim() ? 'Спробуйте змінити критерії пошуку' : 'Список пацієнтів порожній' }}
-                            </p>
-                        </div>
+                    <!-- Empty state -->
+                    <div *ngIf="patients.length === 0 && !isLoading" class="flex flex-col items-center justify-center h-full min-h-64">
+                        <mat-icon [svgIcon]="'heroicons_outline:users'" class="text-gray-400 w-16 h-16 mb-4"></mat-icon>
+                        <p class="text-gray-500 text-lg font-medium">Пацієнтів не знайдено</p>
+                        <p class="text-gray-400 mt-2 text-center">
+                            {{ lastCompletedSearchTerm && lastCompletedSearchTerm.trim() ? 'Спробуйте змінити критерії пошуку' : 'Список пацієнтів порожній' }}
+                        </p>
                     </div>
                 </div>
-
+                
                 <!-- Footer with count -->
                 <div *ngIf="patients.length > 0" class="flex-none border-t px-3 py-1 bg-gray-50">
                     <div class="text-secondary text-sm">
@@ -113,6 +112,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
 </div> 

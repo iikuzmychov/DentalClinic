@@ -18,11 +18,21 @@ export interface DeleteConfirmationData {
         MatDialogModule,
         MatIconModule
     ],
+    styles: [`
+        :host {
+            display: block;
+            width: 100%;
+        }
+        
+        ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+            padding: 0 !important;
+        }
+    `],
     template: `
-        <div class="flex flex-col max-w-160 max-h-screen -m-6">
+        <div class="flex flex-col w-full h-full">
             
             <!-- Header -->
-            <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-warn text-on-warn">
+            <div class="flex flex-0 items-center justify-between h-16 px-6 bg-warn text-on-warn">
                 <div class="text-lg font-medium">
                     {{ data.title }}
                 </div>
@@ -37,7 +47,7 @@ export interface DeleteConfirmationData {
             </div>
 
             <!-- Content -->
-            <div class="flex flex-col flex-auto p-6 sm:p-8">
+            <div class="flex flex-col flex-auto px-6 py-6">
                 <div class="flex items-center mb-6">
                     <mat-icon 
                         [svgIcon]="'heroicons_outline:exclamation-triangle'" 

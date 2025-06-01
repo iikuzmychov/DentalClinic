@@ -11,9 +11,15 @@ export const initialDataResolver = () =>
         default: [
             {
                 id: 'appointments',
-                title: 'Записи на прийом',
+                title: 'Розклад',
                 type: 'basic',
                 link: '/appointments'
+            },
+            {
+                id: 'patients',
+                title: 'Пацієнти',
+                type: 'basic',
+                link: '/patients'
             },
             {
                 id: 'services',
@@ -22,10 +28,8 @@ export const initialDataResolver = () =>
                 link: '/services'
             },
             {
-                id: 'patients',
-                title: 'Пацієнти',
-                type: 'basic',
-                link: '/patients'
+                id: 'divider-1',
+                type: 'divider'
             },
             {
                 id: 'users',
@@ -37,9 +41,15 @@ export const initialDataResolver = () =>
         horizontal: [
             {
                 id: 'appointments',
-                title: 'Записи на прийом',
+                title: 'Розклад',
                 type: 'basic',
                 link: '/appointments'
+            },
+            {
+                id: 'patients',
+                title: 'Пацієнти',
+                type: 'basic',
+                link: '/patients'
             },
             {
                 id: 'services',
@@ -48,10 +58,8 @@ export const initialDataResolver = () =>
                 link: '/services'
             },
             {
-                id: 'patients',
-                title: 'Пацієнти',
-                type: 'basic',
-                link: '/patients'
+                id: 'divider-1',
+                type: 'divider'
             },
             {
                 id: 'users',
