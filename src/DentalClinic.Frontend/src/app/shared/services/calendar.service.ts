@@ -35,10 +35,10 @@ export class CalendarService {
     
     private readonly statusThemes: Record<AppointmentStatus, StatusTheme> = {
         'Scheduled': {
-            primary: '#1976d2',
-            secondary: '#1976d2',
+            primary: '#eab308',
+            secondary: '#eab308',
             textColor: '#ffffff',
-            badgeClass: 'bg-blue-500',
+            badgeClass: 'bg-yellow-500',
             displayName: 'Запланований'
         },
         'Completed': {

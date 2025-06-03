@@ -26,7 +26,8 @@ import {
     ListUsersResponse,
     ListUsersResponseItem,
     ListServicesResponse,
-    ListServicesResponseItem
+    ListServicesResponseItem,
+    AppointmentStatus
 } from 'app/api/models';
 import { AppointmentCompletionDialogComponent } from '../appointment-completion-dialog/appointment-completion-dialog.component';
 import { DeleteConfirmationDialogComponent } from '../../services/delete-confirmation-dialog/delete-confirmation-dialog.component';
@@ -125,6 +126,18 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
         .rotate-180 {
             transform: rotate(180deg);
         }
+
+        /* Status badge styling */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 12px;
+            color: white;
+        }
     `],
     template: `
         <div class="flex flex-col w-full h-full">
@@ -151,6 +164,12 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                         [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                     <div class="text-lg font-medium">
                         {{ data.mode === 'add' ? 'Новий запис на прийом' : data.mode === 'edit' ? 'Редагування запису' : 'Перегляд запису' }}
+                    </div>
+                    <!-- Status Badge (only for edit/view modes) -->
+                    <div *ngIf="data.mode !== 'add'" 
+                         class="status-badge"
+                         [style.background-color]="getStatusTheme().primary">
+                        {{ getStatusDisplayName() }}
                     </div>
                 </div>
                 <button
@@ -286,18 +305,6 @@ function minimumDurationValidator(control: AbstractControl): ValidationErrors | 
                         <div *ngIf="appointmentForm.hasError('minimumDuration')" class="text-red-500 text-sm mt-2">
                             Мінімальна тривалість прийому - 15 хвилин
                         </div>
-                    </div>
-
-                    <!-- Status (only for edit/view modes) -->
-                    <div *ngIf="data.mode !== 'add'" class="mb-6">
-                        <mat-form-field appearance="outline" class="w-full" [class.readonly-field]="true">
-                            <mat-label>Статус</mat-label>
-                            <mat-select [value]="currentAppointmentStatus" disabled>
-                                <mat-option *ngFor="let statusOption of statusOptions" [value]="statusOption.value">
-                                    {{ statusOption.label }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
                     </div>
 
                     <!-- Provided Services (only for Completed/Paid appointments) -->
@@ -1005,5 +1012,33 @@ export class AppointmentDialogComponent implements OnInit {
                     });
             }
         });
+    }
+
+    /**
+     * Get status theme for badge styling
+     */
+    getStatusTheme(): { primary: string; secondary: string; textColor: string } {
+        const status = this.currentStatus as AppointmentStatus;
+        const themes = {
+            'Scheduled': { primary: '#eab308', secondary: '#eab308', textColor: '#ffffff' },
+            'Completed': { primary: '#4caf50', secondary: '#4caf50', textColor: '#ffffff' },
+            'Cancelled': { primary: '#f44336', secondary: '#f44336', textColor: '#ffffff' },
+            'Paid': { primary: '#374151', secondary: '#374151', textColor: '#ffffff' }
+        };
+        return themes[status] || themes['Scheduled'];
+    }
+
+    /**
+     * Get status display name
+     */
+    getStatusDisplayName(): string {
+        const status = this.currentStatus as AppointmentStatus;
+        const displayNames = {
+            'Scheduled': 'Запланований',
+            'Completed': 'Завершений',
+            'Cancelled': 'Скасований',
+            'Paid': 'Сплачений'
+        };
+        return displayNames[status] || 'Запланований';
     }
 } 
