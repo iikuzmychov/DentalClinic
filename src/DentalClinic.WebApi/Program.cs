@@ -71,10 +71,14 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-await using (var scope = app.Services.CreateAsyncScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
+    await using var scope = app.Services.CreateAsyncScope();
+
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.MigrateAsync();
 }
 
 app.Run();
+
+public partial class Program { }
