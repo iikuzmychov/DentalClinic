@@ -27,15 +27,7 @@ public sealed class Patient : IIdentifiable<GuidEntityId<Patient>>
             field = value;
         }
     }
-    public string? Surname
-    {
-        get;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            field = value;
-        }
-    }
+    public string? Surname { get; set; }
     public Email? Email { get; set; }
     public string? PhoneNumber
     {
