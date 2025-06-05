@@ -374,6 +374,22 @@ export class AppointmentsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * Handle event time change (disabled but needed for template)
+     */
+    onEventTimeChange(event: CalendarEventTimesChangedEvent): void {
+        // Drag & drop is disabled, so this method does nothing
+        console.log('Event time change is disabled');
+    }
+
+    /**
+     * Handle event resize (disabled but needed for template)
+     */
+    onEventResize(event: any): void {
+        // Resize is disabled, so this method does nothing
+        console.log('Event resize is disabled');
+    }
+
+    /**
      * Add new appointment
      */
     addAppointment(): void {

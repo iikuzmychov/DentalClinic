@@ -113,10 +113,10 @@ export class CalendarService {
             },
             cssClass: `appointment-${status.toLowerCase()}`,
             resizable: {
-                beforeStart: isScheduled,
-                afterEnd: isScheduled
+                beforeStart: false,
+                afterEnd: false
             },
-            draggable: isScheduled,
+            draggable: false,
             meta: {
                 appointment,
                 patientName,
@@ -230,10 +230,10 @@ export class CalendarService {
             },
             cssClass: `appointment-${status.toLowerCase()}`,
             resizable: {
-                beforeStart: isScheduled,
-                afterEnd: isScheduled
+                beforeStart: false,
+                afterEnd: false
             },
-            draggable: isScheduled,
+            draggable: false,
             meta: {
                 appointment,
                 patientName,
