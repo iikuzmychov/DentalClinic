@@ -368,6 +368,12 @@ export class UserDialogComponent implements OnInit {
 
         // Set readonly state
         this.isReadonly = this.currentMode === 'view';
+
+        // Disable email and role fields in edit mode
+        if (this.currentMode === 'edit') {
+            this.userForm.get('email')?.disable();
+            this.userForm.get('role')?.disable();
+        }
     }
 
     switchToEditMode(): void {
