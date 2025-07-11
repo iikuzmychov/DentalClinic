@@ -22,7 +22,7 @@ internal sealed class AddUserEndpoint : IEndpoint<UsersEndpointGroup>
         [FromBody] AddUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        if (await dbContext.Users.AnyAsync(user => user.Email == (object)request.Email, cancellationToken))
+        if (await dbContext.Users.AnyAsync(user => user.Email == request.Email, cancellationToken))
         {
             return TypedResults.Conflict();
         }
@@ -33,7 +33,7 @@ internal sealed class AddUserEndpoint : IEndpoint<UsersEndpointGroup>
             FirstName = request.FirstName,
             Surname = request.Surname,
             Role = request.Role,
-            Email = new Email(request.Email),
+            Email = request.Email,
             PhoneNumber = request.PhoneNumber,
             HashedPassword = HashedPassword.FromSecurePassword(new SecurePassword(request.Password))
         };

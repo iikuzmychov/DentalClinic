@@ -24,7 +24,7 @@ internal sealed class AddPatientEndpoint : IEndpoint<PatientsEndpointGroup>
     {
         var isEmailOccupied =
             request.Email is not null &&
-            await dbContext.Patients.AnyAsync(patient => patient.Email == (object?)request.Email, cancellationToken);
+            await dbContext.Patients.AnyAsync(patient => patient.Email == request.Email, cancellationToken);
 
         if (isEmailOccupied)
         {
@@ -36,7 +36,7 @@ internal sealed class AddPatientEndpoint : IEndpoint<PatientsEndpointGroup>
             LastName = request.LastName,
             FirstName = request.FirstName,
             Surname = request.Surname,
-            Email = request.Email is null ? null : new Email(request.Email),
+            Email = request.Email,
             PhoneNumber = request.PhoneNumber,
             Notes = request.Notes
         };

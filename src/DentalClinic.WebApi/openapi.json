@@ -924,6 +924,9 @@
             "nullable": true
           },
           "email": {
+            "maxLength": 320,
+            "minLength": 6,
+            "pattern": "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
             "nullable": true
           },
@@ -1003,6 +1006,9 @@
             "$ref": "#/components/schemas/Role"
           },
           "email": {
+            "maxLength": 320,
+            "minLength": 6,
+            "pattern": "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string"
           },
           "phoneNumber": {
@@ -1257,6 +1263,9 @@
             "$ref": "#/components/schemas/Role"
           },
           "email": {
+            "maxLength": 320,
+            "minLength": 6,
+            "pattern": "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string"
           },
           "phoneNumber": {
@@ -1544,6 +1553,9 @@
             "$ref": "#/components/schemas/Role"
           },
           "email": {
+            "maxLength": 320,
+            "minLength": 6,
+            "pattern": "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string"
           },
           "phoneNumber": {
@@ -1634,6 +1646,9 @@
             "nullable": true
           },
           "email": {
+            "maxLength": 320,
+            "minLength": 6,
+            "pattern": "^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
             "nullable": true
           },

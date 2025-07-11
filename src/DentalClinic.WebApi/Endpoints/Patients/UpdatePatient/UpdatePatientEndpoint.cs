@@ -36,7 +36,7 @@ internal sealed class UpdatePatientEndpoint : IEndpoint<PatientsEndpointGroup>
             request.Email is not null &&
             await dbContext.Patients
                 .Where(patient => patient.Id != patientToUpdate.Id)
-                .AnyAsync(patient => patient.Email == (object?)request.Email, cancellationToken);
+                .AnyAsync(patient => patient.Email == request.Email, cancellationToken);
 
         if (isEmailOccupied)
         {
@@ -46,7 +46,7 @@ internal sealed class UpdatePatientEndpoint : IEndpoint<PatientsEndpointGroup>
         patientToUpdate.LastName = request.LastName;
         patientToUpdate.FirstName = request.FirstName;
         patientToUpdate.Surname = request.Surname;
-        patientToUpdate.Email = request.Email is null ? null : new Email(request.Email);
+        patientToUpdate.Email = request.Email;
         patientToUpdate.PhoneNumber = request.PhoneNumber;
         patientToUpdate.Notes = request.Notes;
 

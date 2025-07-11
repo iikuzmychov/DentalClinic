@@ -1,4 +1,5 @@
-﻿using DentalClinic.Domain.Types;
+﻿using DentalClinic.Domain;
+using DentalClinic.Domain.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
@@ -17,7 +18,8 @@ public static class OpenApiExtensions
             options.AddDocumentTransformer(AddBearerSchemeAsync);
             options.AddOperationTransformer(ConfigureEndpointSecurityAsync);
             options.AddSchemaTransformer(MapGuidEntityIdToUuidAsync);
-            options.CreateSchemaReferenceId = CreateDefaultSchemaReferenceId;
+            options.AddSchemaTransformer(MapEmailToSchemaAsync);
+            options.CreateSchemaReferenceId = CreateSchemaReferenceId;
         });
 
         return services;
@@ -145,10 +147,31 @@ public static class OpenApiExtensions
         return Task.CompletedTask;
     }
 
-    private static string? CreateDefaultSchemaReferenceId(JsonTypeInfo typeInfo)
+    private static Task MapEmailToSchemaAsync(
+        OpenApiSchema schema,
+        OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        if (context.JsonTypeInfo.Type == typeof(Email))
+        {
+            schema.Type = "string";
+            schema.MinLength = Email.MinLength;
+            schema.MaxLength = Email.MaxLength;
+            schema.Pattern = Email.Regex().ToString();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static string? CreateSchemaReferenceId(JsonTypeInfo typeInfo)
     {
         if (typeInfo.Type.IsGenericType &&
             typeInfo.Type.GetGenericTypeDefinition() == typeof(GuidEntityId<>))
+        {
+            return null;
+        }
+
+        if (typeInfo.Type == typeof(Email))
         {
             return null;
         }

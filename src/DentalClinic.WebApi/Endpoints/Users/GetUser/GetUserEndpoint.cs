@@ -36,7 +36,7 @@ internal sealed class GetUserEndpoint : IEndpoint<UsersEndpointGroup>
             FirstName = user.FirstName,
             Surname = user.Surname,
             Role = user.Role,
-            Email = user.Email.Value,
+            Email = user.Email,
             PhoneNumber = user.PhoneNumber
         });
     }

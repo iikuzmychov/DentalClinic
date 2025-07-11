@@ -5,8 +5,8 @@ namespace DentalClinic.Domain;
 
 public sealed partial record Email
 {
-    private const int MinLength = 6;
-    private const int MaxLength = 320;
+    public const int MinLength = 6;
+    public const int MaxLength = 320;
 
     [MaxLength(MaxLength)]
     [MinLength(MinLength)]
@@ -30,5 +30,5 @@ public sealed partial record Email
     }
 
     [GeneratedRegex("^[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")]
-    private static partial Regex Regex();
+    public static partial Regex Regex();
 }

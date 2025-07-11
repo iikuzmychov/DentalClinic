@@ -42,6 +42,7 @@ builder.Services.AddProblemDetails();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonGuidEntityIdConverterFactory());
+    options.SerializerOptions.Converters.Add(new JsonEmailConverter());
 });
 
 var application = builder.Build();
@@ -54,9 +55,6 @@ if (application.Environment.IsDevelopment())
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowAnyOrigin());
-
-    //application.UseDeveloperExceptionPage(); // do we need this?
-    //application.UseStatusCodePages(); // do we need this?
 }
 else
 {

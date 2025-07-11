@@ -1,4 +1,5 @@
-﻿using DentalClinic.Domain.Aggregates.UserAggregate;
+﻿using DentalClinic.Domain;
+using DentalClinic.Domain.Aggregates.UserAggregate;
 using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
 
@@ -11,6 +12,6 @@ public sealed record ListUsersResponseItem
     public required string FirstName { get; init; }
     public required string? Surname { get; init; }
     public required Role Role { get; init; }
-    public required string Email { get; init; }
+    public required Email Email { get; init; }
     public required string? PhoneNumber { get; init; }
 }
