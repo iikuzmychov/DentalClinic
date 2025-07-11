@@ -42,7 +42,7 @@ internal sealed class ListServicesEndpoint : IEndpoint<ServicesEndpointGroup>
             Items = services
                 .Select(service => new ListServicesResponseItem
                 {
-                    Id = service.Id.Value,
+                    Id = service.Id,
                     Name = service.Name,
                     Price = service.Price.Value,
                 })

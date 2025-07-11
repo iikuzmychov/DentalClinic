@@ -1,8 +1,11 @@
-﻿namespace DentalClinic.WebApi.Endpoints.Patients.ListPatients;
+﻿using DentalClinic.Domain.Aggregates.PatientAggregate;
+using DentalClinic.Domain.Types;
+
+namespace DentalClinic.WebApi.Endpoints.Patients.ListPatients;
 
 public sealed record ListPatientsResponseItem
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<Patient> Id { get; init; }
     public required string LastName { get; init; }
     public required string FirstName { get; init; }
     public required string? Surname { get; init; }

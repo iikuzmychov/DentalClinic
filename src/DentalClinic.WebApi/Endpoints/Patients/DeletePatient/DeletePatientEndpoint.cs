@@ -13,19 +13,17 @@ internal sealed class DeletePatientEndpoint : IEndpoint<PatientsEndpointGroup>
 {
     public RouteHandlerBuilder Map(RouteGroupBuilder group)
     {
-        return group.MapDelete("{id:guid}", HandleAsync);
+        return group
+            .MapDelete("{id:guid}", HandleAsync)
+            .RequireAuthorization(policy => policy.RequireRole(nameof(Role.Admin)));
     }
 
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = nameof(Role.Admin))]
     private static async Task<Results<NoContent, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Patient> id,
         CancellationToken cancellationToken = default)
     {
-        var patientToDelete = await dbContext.Patients.GetByIdOrDefaultAsync(
-            new GuidEntityId<Patient>(id),
-            cancellationToken);
+        var patientToDelete = await dbContext.Patients.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (patientToDelete is null)
         {

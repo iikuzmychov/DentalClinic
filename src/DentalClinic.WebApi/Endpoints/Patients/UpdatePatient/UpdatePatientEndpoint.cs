@@ -21,13 +21,11 @@ internal sealed class UpdatePatientEndpoint : IEndpoint<PatientsEndpointGroup>
 
     private static async Task<Results<NoContent, NotFound, Conflict>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Patient> id,
         [FromBody] UpdatePatientRequest request,
         CancellationToken cancellationToken = default)
     {
-        var patientToUpdate = await dbContext.Patients.GetByIdOrDefaultAsync(
-            new GuidEntityId<Patient>(id),
-            cancellationToken);
+        var patientToUpdate = await dbContext.Patients.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (patientToUpdate is null)
         {

@@ -17,12 +17,12 @@ internal sealed class GetServiceEndpoint : IEndpoint<ServicesEndpointGroup>
 
     private static async Task<Results<Ok<GetServiceResponse>, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Service> id,
         CancellationToken cancellationToken = default)
     {
         var service = await dbContext.Services
             .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Service>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (service is null)
         {
@@ -31,7 +31,7 @@ internal sealed class GetServiceEndpoint : IEndpoint<ServicesEndpointGroup>
 
         return TypedResults.Ok(new GetServiceResponse
         {
-            Id = service.Id.Value,
+            Id = service.Id,
             Name = service.Name,
             Price = service.Price.Value
         });

@@ -46,7 +46,7 @@ internal sealed class AddPatientEndpoint : IEndpoint<PatientsEndpointGroup>
 
         return TypedResults.Ok(new AddPatientResponse
         {
-            Id = patient.Id.Value
+            Id = patient.Id
         });
     }
 

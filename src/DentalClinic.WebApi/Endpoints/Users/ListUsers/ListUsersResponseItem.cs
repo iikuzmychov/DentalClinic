@@ -1,10 +1,12 @@
-﻿using DentalClinic.Domain.Enums;
+﻿using DentalClinic.Domain.Aggregates.UserAggregate;
+using DentalClinic.Domain.Enums;
+using DentalClinic.Domain.Types;
 
 namespace DentalClinic.WebApi.Endpoints.Users.ListUsers;
 
 public sealed record ListUsersResponseItem
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<User> Id { get; init; }
     public required string LastName { get; init; }
     public required string FirstName { get; init; }
     public required string? Surname { get; init; }

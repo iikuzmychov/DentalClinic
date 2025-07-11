@@ -17,12 +17,12 @@ internal sealed class GetUserEndpoint : IEndpoint<UsersEndpointGroup>
 
     private static async Task<Results<Ok<GetUserResponse>, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<User> id,
         CancellationToken cancellationToken = default)
     {
         var user = await dbContext.Users
             .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<User>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (user is null)
         {
@@ -31,7 +31,7 @@ internal sealed class GetUserEndpoint : IEndpoint<UsersEndpointGroup>
 
         return TypedResults.Ok(new GetUserResponse
         {
-            Id = user.Id.Value,
+            Id = user.Id,
             LastName = user.LastName,
             FirstName = user.FirstName,
             Surname = user.Surname,

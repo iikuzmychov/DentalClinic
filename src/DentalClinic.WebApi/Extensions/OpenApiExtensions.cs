@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using DentalClinic.Domain.Types;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization.Metadata;
 
 namespace DentalClinic.WebApi.Extensions;
 
@@ -14,6 +16,8 @@ public static class OpenApiExtensions
             options.AddDocumentTransformer(SortPathsAndOperationsAsync);
             options.AddDocumentTransformer(AddBearerSchemeAsync);
             options.AddOperationTransformer(ConfigureEndpointSecurityAsync);
+            options.AddSchemaTransformer(MapGuidEntityIdToUuidAsync);
+            options.CreateSchemaReferenceId = CreateDefaultSchemaReferenceId;
         });
 
         return services;
@@ -80,7 +84,7 @@ public static class OpenApiExtensions
     private static Task SortPathsAndOperationsAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,
-        CancellationToken ct)
+        CancellationToken cancellationToken)
     {
         var orderedPaths = document.Paths
             .OrderBy(path => path.Key.Length)
@@ -122,5 +126,33 @@ public static class OpenApiExtensions
         document.Paths = newPaths;
 
         return Task.CompletedTask;
+    }
+
+    private static Task MapGuidEntityIdToUuidAsync(
+        OpenApiSchema schema,
+        OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        if (context.JsonTypeInfo.Type.IsGenericType &&
+            context.JsonTypeInfo.Type.GetGenericTypeDefinition() == typeof(GuidEntityId<>))
+        {
+            schema.Type = "string";
+            schema.Format = "uuid";
+            schema.Reference = null;
+            schema.Properties?.Clear();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static string? CreateDefaultSchemaReferenceId(JsonTypeInfo typeInfo)
+    {
+        if (typeInfo.Type.IsGenericType &&
+            typeInfo.Type.GetGenericTypeDefinition() == typeof(GuidEntityId<>))
+        {
+            return null;
+        }
+
+        return OpenApiOptions.CreateDefaultSchemaReferenceId(typeInfo);
     }
 }

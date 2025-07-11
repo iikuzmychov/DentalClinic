@@ -37,7 +37,7 @@ internal sealed class AddServiceEndpoint : IEndpoint<ServicesEndpointGroup>
 
         return TypedResults.Ok(new AddServiceResponse
         {
-            Id = service.Id.Value
+            Id = service.Id
         });
     }
 }

@@ -1,6 +1,9 @@
-﻿namespace DentalClinic.WebApi.Endpoints.Appointments.AddAppointment;
+﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
+using DentalClinic.Domain.Types;
+
+namespace DentalClinic.WebApi.Endpoints.Appointments.AddAppointment;
 
 public sealed record AddAppointmentResponse
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<Appointment> Id { get; init; }
 }

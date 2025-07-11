@@ -24,18 +24,14 @@ internal sealed class AddAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
         [FromBody] AddAppointmentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var patient = await dbContext.Patients.GetByIdOrDefaultAsync(
-            new GuidEntityId<Patient>(request.PatientId),
-            cancellationToken);
+        var patient = await dbContext.Patients.GetByIdOrDefaultAsync(request.PatientId, cancellationToken);
 
         if (patient is null)
         {
             return TypedResults.NotFound();
         }
 
-        var dentist = await dbContext.Dentists.GetByIdOrDefaultAsync(
-            new GuidEntityId<User>(request.DentistId),
-            cancellationToken);
+        var dentist = await dbContext.Dentists.GetByIdOrDefaultAsync(request.DentistId, cancellationToken);
 
         if (dentist is null)
         {
@@ -49,7 +45,7 @@ internal sealed class AddAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
 
         return TypedResults.Ok(new AddAppointmentResponse
         {
-            Id = appointment.Id.Value
+            Id = appointment.Id
         });
     }
 }

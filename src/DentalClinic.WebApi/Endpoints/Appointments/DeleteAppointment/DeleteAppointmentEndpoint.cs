@@ -19,12 +19,12 @@ internal sealed class DeleteAppointmentEndpoint : IEndpoint<AppointmentsEndpoint
     }
     private static async Task<Results<NoContent, NotFound, Conflict>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Appointment> id,
         CancellationToken cancellationToken = default)
     {
         var appointmentToDelete = await dbContext.Appointments
             .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Appointment>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (appointmentToDelete is null)
         {

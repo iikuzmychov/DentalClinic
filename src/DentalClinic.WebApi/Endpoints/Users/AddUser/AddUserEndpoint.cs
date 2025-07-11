@@ -43,7 +43,7 @@ internal sealed class AddUserEndpoint : IEndpoint<UsersEndpointGroup>
 
         return TypedResults.Ok(new AddUserResponse
         {
-            Id = user.Id.Value
+            Id = user.Id
         });
     }
 }

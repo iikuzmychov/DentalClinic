@@ -1,5 +1,4 @@
 ﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
-using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
@@ -18,7 +17,7 @@ internal sealed class GetAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
 
     private static async Task<Results<Ok<GetAppointmentResponse>, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Appointment> id,
         CancellationToken cancellationToken = default)
     {
         var appointment = await dbContext.Appointments
@@ -26,7 +25,7 @@ internal sealed class GetAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
             .Include(appointment => appointment.Dentist)
             .Include(appointment => appointment.Patient)
             .Include(appointment => appointment.ProvidedServices)
-            .GetByIdOrDefaultAsync(new GuidEntityId<Appointment>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (appointment is null)
         {
@@ -35,17 +34,17 @@ internal sealed class GetAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
 
         return TypedResults.Ok(new GetAppointmentResponse
         {
-            Id = appointment.Id.Value,
+            Id = appointment.Id,
             Patient = new()
             {
-                Id = appointment.Patient.Id.Value,
+                Id = appointment.Patient.Id,
                 LastName = appointment.Patient.LastName,
                 FirstName = appointment.Patient.FirstName,
                 Surname = appointment.Patient.Surname
             },
             Dentist = new()
             {
-                Id = appointment.Dentist.Id.Value,
+                Id = appointment.Dentist.Id,
                 LastName = appointment.Dentist.LastName,
                 FirstName = appointment.Dentist.FirstName,
                 Surname = appointment.Dentist.Surname
@@ -56,7 +55,7 @@ internal sealed class GetAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
             ProvidedServices = appointment.ProvidedServices
                 .Select(service => new GetAppointmentResponseItemProvidedService
                 {
-                    Id = service.Id.Value,
+                    Id = service.Id,
                     Name = service.Name,
                     Price = service.Price.Value
                 })

@@ -17,12 +17,12 @@ internal sealed class GetPatientEndpoint : IEndpoint<PatientsEndpointGroup>
 
     private static async Task<Results<Ok<GetPatientResponse>, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Patient> id,
         CancellationToken cancellationToken = default)
     {
         var patient = await dbContext.Patients
             .AsNoTracking()
-            .GetByIdOrDefaultAsync(new GuidEntityId<Patient>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (patient is null)
         {
@@ -31,7 +31,7 @@ internal sealed class GetPatientEndpoint : IEndpoint<PatientsEndpointGroup>
 
         return TypedResults.Ok(new GetPatientResponse
         {
-            Id = patient.Id.Value,
+            Id = patient.Id,
             LastName = patient.LastName,
             FirstName = patient.FirstName,
             Surname = patient.Surname,

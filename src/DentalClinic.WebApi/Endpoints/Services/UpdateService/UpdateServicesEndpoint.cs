@@ -20,13 +20,11 @@ internal sealed class UpdateServicesEndpoint : IEndpoint<ServicesEndpointGroup>
 
     private static async Task<Results<NoContent, Conflict, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Service> id,
         [FromBody] UpdateServiceRequest request,
         CancellationToken cancellationToken = default)
     {
-        var serviceToUpdate = await dbContext.Services.GetByIdOrDefaultAsync(
-            new GuidEntityId<Service>(id),
-            cancellationToken);
+        var serviceToUpdate = await dbContext.Services.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (serviceToUpdate is null)
         {

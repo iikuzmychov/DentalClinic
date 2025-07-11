@@ -1,10 +1,12 @@
-﻿using DentalClinic.Domain.Enums;
+﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
+using DentalClinic.Domain.Enums;
+using DentalClinic.Domain.Types;
 
 namespace DentalClinic.WebApi.Endpoints.Appointments.GetAppointment;
 
 public sealed record GetAppointmentResponse
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<Appointment> Id { get; init; }
     public required GetAppointmentResponseItemPatient Patient { get; init; }
     public required GetAppointmentResponseItemDentist Dentist { get; init; }
     public required AppointmentStatus Status { get; init; }

@@ -1,3 +1,4 @@
+using DentalClinic.Domain.JsonConverters;
 using DentalClinic.Infrastructure;
 using DentalClinic.WebApi;
 using DentalClinic.WebApi.Extensions;
@@ -37,6 +38,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationOpenApi();
 
 builder.Services.AddProblemDetails();
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonGuidEntityIdConverterFactory());
+});
 
 var application = builder.Build();
 

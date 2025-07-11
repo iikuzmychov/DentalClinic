@@ -19,12 +19,10 @@ internal sealed class DeleteUserEndpoint : IEndpoint<UsersEndpointGroup>
 
     public static async Task<Results<NoContent, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<User> id,
         CancellationToken cancellationToken = default)
     {
-        var userToDelete = await dbContext.Users.GetByIdOrDefaultAsync(
-            new GuidEntityId<User>(id),
-            cancellationToken);
+        var userToDelete = await dbContext.Users.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (userToDelete is null)
         {

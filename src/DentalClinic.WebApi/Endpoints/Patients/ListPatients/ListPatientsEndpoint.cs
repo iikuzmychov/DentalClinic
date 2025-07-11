@@ -48,7 +48,7 @@ internal sealed class ListPatientsEndpoint : IEndpoint<PatientsEndpointGroup>
             Items = patients
                 .Select(patient => new ListPatientsResponseItem
                 {
-                    Id = patient.Id.Value,
+                    Id = patient.Id,
                     LastName = patient.LastName,
                     FirstName = patient.FirstName,
                     Surname = patient.Surname,

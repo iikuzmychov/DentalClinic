@@ -19,13 +19,11 @@ internal sealed class UpdateUserEndpoint : IEndpoint<UsersEndpointGroup>
 
     private static async Task<Results<NoContent, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<User> id,
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var user = await dbContext.Users.GetByIdOrDefaultAsync(
-            new GuidEntityId<User>(id),
-            cancellationToken);
+        var user = await dbContext.Users.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (user is null)
         {

@@ -21,31 +21,25 @@ internal sealed class UpdateAppointmentEndpoint : IEndpoint<AppointmentsEndpoint
 
     private static async Task<Results<NoContent, NotFound, Conflict>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Appointment> id,
         [FromBody] UpdateAppointmentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var appointmentToUpdate = await dbContext.Appointments.GetByIdOrDefaultAsync(
-            new GuidEntityId<Appointment>(id),
-            cancellationToken);
+        var appointmentToUpdate = await dbContext.Appointments.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (appointmentToUpdate is null)
         {
             return TypedResults.NotFound();
         }
 
-        var patient = await dbContext.Patients.GetByIdOrDefaultAsync(
-            new GuidEntityId<Patient>(request.PatientId),
-            cancellationToken);
+        var patient = await dbContext.Patients.GetByIdOrDefaultAsync(request.PatientId, cancellationToken);
 
         if (patient is null)
         {
             return TypedResults.NotFound();
         }
 
-        var dentist = await dbContext.Dentists.GetByIdOrDefaultAsync(
-            new GuidEntityId<User>(request.DentistId),
-            cancellationToken);
+        var dentist = await dbContext.Dentists.GetByIdOrDefaultAsync(request.DentistId, cancellationToken);
 
         if (dentist is null)
         {

@@ -1,6 +1,9 @@
-﻿namespace DentalClinic.WebApi.Endpoints.Patients.AddPatient;
+﻿using DentalClinic.Domain.Aggregates.PatientAggregate;
+using DentalClinic.Domain.Types;
+
+namespace DentalClinic.WebApi.Endpoints.Patients.AddPatient;
 
 public sealed record AddPatientResponse
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<Patient> Id { get; init; }
 }

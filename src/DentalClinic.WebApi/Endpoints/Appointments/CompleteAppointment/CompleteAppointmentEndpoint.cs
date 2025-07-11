@@ -20,13 +20,13 @@ internal sealed class CompleteAppointmentEndpoint : IEndpoint<AppointmentsEndpoi
     }
     private static async Task<Results<NoContent, NotFound, Conflict>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Appointment> id,
         [FromBody] CompleteAppointmentRequest request,
         CancellationToken cancellationToken = default)
     {
         var appointmentToComplete = await dbContext.Appointments
             .Include(appointment => appointment.ProvidedServices)
-            .GetByIdOrDefaultAsync(new GuidEntityId<Appointment>(id), cancellationToken);
+            .GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (appointmentToComplete is null)
         {

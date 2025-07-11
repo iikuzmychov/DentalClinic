@@ -56,7 +56,7 @@ internal sealed class ListUsersEndpoint : IEndpoint<UsersEndpointGroup>
             Items = users
                 .Select(user => new ListUsersResponseItem
                 {
-                    Id = user.Id.Value,
+                    Id = user.Id,
                     LastName = user.LastName,
                     FirstName = user.FirstName,
                     Surname = user.Surname,

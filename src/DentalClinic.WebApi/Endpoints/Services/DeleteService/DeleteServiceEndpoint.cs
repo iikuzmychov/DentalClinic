@@ -20,12 +20,10 @@ internal sealed class DeleteServiceEndpoint : IEndpoint<ServicesEndpointGroup>
 
     public static async Task<Results<NoContent, NotFound>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Service> id,
         CancellationToken cancellationToken = default)
     {
-        var serviceToDelete = await dbContext.Services.GetByIdOrDefaultAsync(
-            new GuidEntityId<Service>(id),
-            cancellationToken);
+        var serviceToDelete = await dbContext.Services.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (serviceToDelete is null)
         {
