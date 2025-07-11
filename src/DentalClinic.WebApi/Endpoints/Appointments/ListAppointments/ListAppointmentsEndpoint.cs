@@ -12,7 +12,7 @@ internal sealed class ListAppointmentsEndpoint : IEndpoint<AppointmentsEndpointG
 {
     public RouteHandlerBuilder Map(RouteGroupBuilder group)
     {
-        return group.MapPost("/", HandleAsync);
+        return group.MapGet("/", HandleAsync);
     }
 
     private static async Task<ListAppointmentsResponse> HandleAsync(
