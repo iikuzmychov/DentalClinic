@@ -2,11 +2,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
-using DentalClinic.WebApi.Models.Appointments;
-using DentalClinic.Domain.Aggregates.PatientAggregate;
-using DentalClinic.Domain.Aggregates.UserAggregate;
-using DentalClinic.Domain.Aggregates.ServiceAggregate;
-using DentalClinic.Domain;
+using DentalClinic.WebApi.Endpoints.Appointments.ListAppointments;
+using DentalClinic.WebApi.Endpoints.Appointments.AddAppointment;
 
 namespace DentalClinic.Tests.Integrational.Controllers;
 

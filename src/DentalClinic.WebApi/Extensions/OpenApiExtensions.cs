@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 
 namespace DentalClinic.WebApi.Extensions;
 
@@ -13,8 +11,9 @@ public static class OpenApiExtensions
     {
         services.AddOpenApi(options =>
         {
+            options.AddDocumentTransformer(SortPathsAndOperationsAsync);
             options.AddDocumentTransformer(AddBearerSchemeAsync);
-            options.AddOperationTransformer(ConfigureEndpointAuthorizationAsync);
+            options.AddOperationTransformer(ConfigureEndpointSecurityAsync);
         });
 
         return services;
@@ -44,27 +43,14 @@ public static class OpenApiExtensions
         return Task.CompletedTask;
     }
 
-    private static Task ConfigureEndpointAuthorizationAsync(
+    private static Task ConfigureEndpointSecurityAsync(
         OpenApiOperation operation,
         OpenApiOperationTransformerContext context,
         CancellationToken cancellationToken)
     {
-        if (context.Description.ActionDescriptor is not ControllerActionDescriptor controllerActionDescriptor)
-        {
-            return Task.CompletedTask;
-        }
-
-        var methodAllowAnonymousAttribute = controllerActionDescriptor
-            .MethodInfo
-            .GetCustomAttribute<AllowAnonymousAttribute>();
-
-        var controllerAllowAnonymousAttribute = controllerActionDescriptor
-            .ControllerTypeInfo
-            .GetCustomAttribute<AllowAnonymousAttribute>();
-
-        var isAuthorizationRequired =
-            methodAllowAnonymousAttribute is null &&
-            controllerAllowAnonymousAttribute is null;
+        var isAuthorizationRequired = context.Description.ActionDescriptor.EndpointMetadata
+            .OfType<AllowAnonymousAttribute>()
+            .Any();
 
         if (!isAuthorizationRequired)
         {
@@ -87,6 +73,53 @@ public static class OpenApiExtensions
         };
 
         operation.Security.Add(securityRequirement);
+
+        return Task.CompletedTask;
+    }
+
+    private static Task SortPathsAndOperationsAsync(
+        OpenApiDocument document,
+        OpenApiDocumentTransformerContext context,
+        CancellationToken ct)
+    {
+        var orderedPaths = document.Paths
+            .OrderBy(path => path.Key.Length)
+            .ThenBy(path => path.Key, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var newPaths = new OpenApiPaths();
+
+        foreach (var (path, pathItem) in orderedPaths)
+        {
+            var orderedOperations = pathItem.Operations
+                .OrderBy(operation => operation.Key switch
+                {
+                    OperationType.Get => 0,
+                    OperationType.Post => 1,
+                    OperationType.Put => 2,
+                    OperationType.Delete => 3,
+                    _ => 4
+                })
+                .ToList();
+
+            var newItem = new OpenApiPathItem
+            {
+                Summary = pathItem.Summary,
+                Description = pathItem.Description,
+                Servers = pathItem.Servers,
+                Extensions = pathItem.Extensions,
+                Parameters = pathItem.Parameters
+            };
+
+            foreach (var (method, operation) in orderedOperations)
+            {
+                newItem.Operations.Add(method, operation);
+            }
+
+            newPaths.Add(path, newItem);
+        }
+
+        document.Paths = newPaths;
 
         return Task.CompletedTask;
     }

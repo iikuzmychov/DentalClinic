@@ -2,7 +2,7 @@ using DentalClinic.Infrastructure;
 using DentalClinic.WebApi;
 using DentalClinic.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,61 +24,69 @@ builder.Services
         options.TokenValidationParameters.RoleClaimType = Constants.JwtRoleClaimName;
     });
 
-builder.Services.AddAuthorization();
+builder.Services
+    .AddAuthorizationBuilder()
+        .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build());
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(new AuthorizeFilter());
-});
+builder.Services.AddCors();
 
+builder.Services.AddApplicationEndpoints();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationOpenApi();
 
 builder.Services.AddProblemDetails();
 
-var app = builder.Build();
+var application = builder.Build();
 
-if (EnvironmentHelper.IsOpenApiGeneration())
+application.UseHttpsRedirection();
+
+if (application.Environment.IsDevelopment())
 {
-    return;
+    application.UseCors(builder => builder
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin());
+
+    //application.UseDeveloperExceptionPage(); // do we need this?
+    //application.UseStatusCodePages(); // do we need this?
+}
+else
+{
+    application.UseExceptionHandler();
 }
 
-app.UseHttpsRedirection();
-app.UseExceptionHandler();
-app.UseStatusCodePages();
+application.UseAuthentication();
+application.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
+application.MapApplicationEndpoints();
+
+if (application.Environment.IsDevelopment() || EnvironmentHelper.IsOpenApiGeneration())
 {
-    app.UseDeveloperExceptionPage();
+    application
+        .MapOpenApi()
+        .AllowAnonymous();
 
-    app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+    application
+        .MapScalarApiReference(options =>
+        {
+            options
+                .AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
+                .WithPersistentAuthentication(true)
+                .WithDownloadButton(false);
+        })
+        .AllowAnonymous();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-if (app.Environment.IsDevelopment())
+if (application.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-
-    app.MapScalarApiReference(options =>
-    {
-        options
-            .AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
-            .WithPersistentAuthentication(true)
-            .WithDownloadButton(false);
-    });
-}
-
-app.MapControllers();
-
-if (!app.Environment.IsEnvironment("Testing"))
-{
-    await using var scope = app.Services.CreateAsyncScope();
+    await using var scope = application.Services.CreateAsyncScope();
 
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.MigrateAsync();
 }
 
-app.Run();
+application.Run();
 
 public partial class Program { }

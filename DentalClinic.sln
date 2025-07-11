@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{176D
 		scripts\launch-databse.sh = scripts\launch-databse.sh
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{C5415CF8-E459-44CB-ACB9-915B63F61D43}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C5415CF8-E459-44CB-ACB9-915B63F61D43}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalClinic.Tests.Unit", "tests\DentalClinic.Tests.Unit\DentalClinic.Tests.Unit.csproj", "{2404D601-CFCB-4968-9261-655933B54435}"
 EndProject

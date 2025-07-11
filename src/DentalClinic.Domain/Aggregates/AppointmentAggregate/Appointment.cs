@@ -1,11 +1,9 @@
 ﻿using DentalClinic.Domain.Aggregates.PatientAggregate;
-using DentalClinic.Domain.Aggregates.AppointmentServiceAggregate;
 using DentalClinic.Domain.Aggregates.ServiceAggregate;
 using DentalClinic.Domain.Aggregates.UserAggregate;
 using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Interfaces;
 using DentalClinic.Domain.Types;
-using DentalClinic.Domain.Types.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
 using EntityFrameworkCore.Projectables;
 

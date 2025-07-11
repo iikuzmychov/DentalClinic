@@ -2,8 +2,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
-using DentalClinic.WebApi.Models.Services;
-using DentalClinic.Domain.Aggregates.ServiceAggregate;
+using DentalClinic.WebApi.Endpoints.Services.AddService;
+using DentalClinic.WebApi.Endpoints.Services.ListServices;
 
 namespace DentalClinic.Tests.Integrational.Controllers;
 

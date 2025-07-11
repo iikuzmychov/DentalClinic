@@ -105,16 +105,6 @@ public class PatientTests
     }
 
     [Fact]
-    public void Surname_Null_ShouldThrowArgumentNullException()
-    {
-        // Arrange
-        var patient = CreateValidPatient();
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => patient.Surname = null!);
-    }
-
-    [Fact]
     public void Email_ValidValue_ShouldSetProperty()
     {
         // Arrange

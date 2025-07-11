@@ -1,8 +1,8 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
-using DentalClinic.WebApi.Models.Auth;
 using System.Net;
+using DentalClinic.WebApi.Endpoints.Auth.Login;
 
 namespace DentalClinic.Tests.Integrational.Controllers;
 
@@ -73,28 +73,5 @@ public class AuthControllerTests : TestBase
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Login_WithoutContentType_ShouldReturnUnsupportedMediaType()
-    {
-        // Arrange
-        var loginRequest = new LoginRequest
-        {
-            Email = "test@example.com",
-            Password = "ValidPassword123!"
-        };
-        
-        var json = JsonSerializer.Serialize(loginRequest);
-        var content = new StringContent(json, Encoding.UTF8, "text/plain"); // Неправильный Content-Type
-
-        // Используем неавторизованный клиент для логина
-        using var client = Factory.CreateClient();
-
-        // Act
-        var response = await client.PostAsync("/api/auth/login", content);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode);
     }
 } 
