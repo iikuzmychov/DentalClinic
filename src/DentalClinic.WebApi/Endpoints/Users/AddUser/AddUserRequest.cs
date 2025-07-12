@@ -11,5 +11,5 @@ public sealed record AddUserRequest
     public required Role Role { get; init; }
     public required Email Email { get; init; }
     public required string? PhoneNumber { get; init; }
-    public required string Password { get; init; }
+    public required SecurePassword Password { get; init; }
 }

@@ -35,7 +35,7 @@ internal sealed class AddUserEndpoint : IEndpoint<UsersEndpointGroup>
             Role = request.Role,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            HashedPassword = HashedPassword.FromSecurePassword(new SecurePassword(request.Password))
+            HashedPassword = HashedPassword.FromSecurePassword(request.Password)
         };
 
         await dbContext.Users.AddAsync(user, cancellationToken);

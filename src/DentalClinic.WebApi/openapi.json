@@ -1016,6 +1016,9 @@
             "nullable": true
           },
           "password": {
+            "maxLength": 64,
+            "minLength": 8,
+            "pattern": "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])[A-Za-z0-9#?!@$%^&*-]+$",
             "type": "string"
           }
         }

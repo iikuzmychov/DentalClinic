@@ -5,8 +5,8 @@ namespace DentalClinic.Domain;
 
 public sealed partial record SecurePassword
 {
-    private const int MinLength = 8;
-    private const int MaxLength = 64;
+    public const int MinLength = 8;
+    public const int MaxLength = 64;
 
     [MinLength(MinLength)]
     [MaxLength(MaxLength)]
@@ -30,5 +30,5 @@ public sealed partial record SecurePassword
     }
 
     [GeneratedRegex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])[A-Za-z0-9#?!@$%^&*-]+$")]
-    private static partial Regex Regex();
+    public static partial Regex Regex();
 }

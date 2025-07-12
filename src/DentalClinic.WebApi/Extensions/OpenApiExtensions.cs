@@ -16,9 +16,13 @@ public static class OpenApiExtensions
         {
             options.AddDocumentTransformer(SortPathsAndOperationsAsync);
             options.AddDocumentTransformer(AddBearerSchemeAsync);
+            
             options.AddOperationTransformer(ConfigureEndpointSecurityAsync);
+            
             options.AddSchemaTransformer(MapGuidEntityIdToUuidAsync);
             options.AddSchemaTransformer(MapEmailToSchemaAsync);
+            options.AddSchemaTransformer(MapSecurePasswordToSchemaAsync);
+
             options.CreateSchemaReferenceId = CreateSchemaReferenceId;
         });
 
@@ -158,6 +162,28 @@ public static class OpenApiExtensions
             schema.MinLength = Email.MinLength;
             schema.MaxLength = Email.MaxLength;
             schema.Pattern = Email.Regex().ToString();
+            schema.Reference = null;
+            schema.Properties?.Clear();
+            schema.Required?.Clear();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private static Task MapSecurePasswordToSchemaAsync(
+        OpenApiSchema schema,
+        OpenApiSchemaTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        if (context.JsonTypeInfo.Type == typeof(SecurePassword))
+        {
+            schema.Type = "string";
+            schema.MinLength = SecurePassword.MinLength;
+            schema.MaxLength = SecurePassword.MaxLength;
+            schema.Pattern = SecurePassword.Regex().ToString();
+            schema.Reference = null;
+            schema.Properties?.Clear();
+            schema.Required?.Clear();
         }
 
         return Task.CompletedTask;
@@ -172,6 +198,11 @@ public static class OpenApiExtensions
         }
 
         if (typeInfo.Type == typeof(Email))
+        {
+            return null;
+        }
+
+        if (typeInfo.Type == typeof(SecurePassword))
         {
             return null;
         }
