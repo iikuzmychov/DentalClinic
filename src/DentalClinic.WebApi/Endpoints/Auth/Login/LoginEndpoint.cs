@@ -26,7 +26,7 @@ internal sealed class LoginEndpoint : IEndpoint<AuthEndpointGroup>
     {
         var user = await dbContext.Users
             .AsNoTracking()
-            .SingleOrDefaultAsync(user => user.Email == (object)request.Email);
+            .SingleOrDefaultAsync(user => user.Email == request.Email);
 
         if (user is null || !user.HashedPassword.IsMatch(request.Password))
         {

@@ -64,17 +64,17 @@ internal sealed class ListAppointmentsEndpoint : IEndpoint<AppointmentsEndpointG
             Items = appointments
                 .Select(appointment => new ListAppointmentsResponseItem
                 {
-                    Id = appointment.Id.Value,
+                    Id = appointment.Id,
                     Patient = new()
                     {
-                        Id = appointment.Patient.Id.Value,
+                        Id = appointment.Patient.Id,
                         LastName = appointment.Patient.LastName,
                         FirstName = appointment.Patient.FirstName,
                         Surname = appointment.Patient.Surname
                     },
                     Dentist = new()
                     {
-                        Id = appointment.Dentist.Id.Value,
+                        Id = appointment.Dentist.Id,
                         LastName = appointment.Dentist.LastName,
                         FirstName = appointment.Dentist.FirstName,
                         Surname = appointment.Dentist.Surname
@@ -85,7 +85,7 @@ internal sealed class ListAppointmentsEndpoint : IEndpoint<AppointmentsEndpointG
                     ProvidedServices = appointment.ProvidedServices
                         .Select(service => new ListAppointmentsResponseItemProvidedService
                         {
-                            Id = service.Id.Value,
+                            Id = service.Id,
                             Name = service.Name
                         })
                         .ToList(),

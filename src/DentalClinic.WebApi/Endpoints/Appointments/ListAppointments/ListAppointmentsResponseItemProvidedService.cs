@@ -1,7 +1,10 @@
-﻿namespace DentalClinic.WebApi.Endpoints.Appointments.ListAppointments;
+﻿using DentalClinic.Domain.Aggregates.ServiceAggregate;
+using DentalClinic.Domain.Types;
+
+namespace DentalClinic.WebApi.Endpoints.Appointments.ListAppointments;
 
 public sealed record ListAppointmentsResponseItemProvidedService
 {
-    public required Guid Id { get; init; }
+    public required GuidEntityId<Service> Id { get; init; }
     public required string Name { get; init; }
 }

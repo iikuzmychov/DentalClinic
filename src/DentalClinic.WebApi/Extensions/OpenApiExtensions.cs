@@ -142,13 +142,29 @@ public static class OpenApiExtensions
         if (context.JsonTypeInfo.Type.IsGenericType &&
             context.JsonTypeInfo.Type.GetGenericTypeDefinition() == typeof(GuidEntityId<>))
         {
-            schema.Type = "string";
-            schema.Format = "uuid";
-            schema.Reference = null;
-            schema.Properties?.Clear();
+            MakeUuid(schema);
+            return Task.CompletedTask;
+        }
+
+        if (schema.Type == "array" &&
+            schema.Items is null &&
+            context.JsonTypeInfo.ElementType?.IsGenericType == true &&
+            context.JsonTypeInfo.ElementType.GetGenericTypeDefinition() == typeof(GuidEntityId<>))
+        {
+            schema.Items = new OpenApiSchema();
+            MakeUuid(schema.Items);
         }
 
         return Task.CompletedTask;
+
+        static void MakeUuid(OpenApiSchema target)
+        {
+            target.Type = "string";
+            target.Format = "uuid";
+            target.Reference = null;
+            target.Properties?.Clear();
+            target.Required?.Clear();
+        }
     }
 
     private static Task MapEmailToSchemaAsync(

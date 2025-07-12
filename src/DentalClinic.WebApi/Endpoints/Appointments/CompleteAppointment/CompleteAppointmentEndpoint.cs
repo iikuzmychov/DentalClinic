@@ -39,7 +39,7 @@ internal sealed class CompleteAppointmentEndpoint : IEndpoint<AppointmentsEndpoi
         }
 
         var providedServices = await dbContext.Services
-            .FilterByIds(request.ProvidedServiceIds.Select(id => new GuidEntityId<Service>(id)))
+            .FilterByIds(request.ProvidedServiceIds)
             .ToListAsync(cancellationToken);
 
         if (providedServices.Count != request.ProvidedServiceIds.Count)
