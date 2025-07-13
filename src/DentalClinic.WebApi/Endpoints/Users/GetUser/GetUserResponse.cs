@@ -1,7 +1,7 @@
 ﻿using DentalClinic.Domain;
 using DentalClinic.Domain.Aggregates.UserAggregate;
 using DentalClinic.Domain.Enums;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 
 namespace DentalClinic.WebApi.Endpoints.Users.GetUser;
 

@@ -145,7 +145,7 @@ public class UserTests
     public void Email_ValidValue_ShouldSetProperty()
     {
         // Arrange
-        var validEmail = new Email("test@example.com");
+        var validEmail = Email.Parse("test@example.com");
 
         // Act
         var user = CreateValidUserWithEmail(validEmail);
@@ -165,7 +165,7 @@ public class UserTests
     public void HashedPassword_ValidValue_ShouldSetProperty()
     {
         // Arrange
-        var securePassword = new SecurePassword("TestPassword123!");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
         var user = CreateValidUser();
 
@@ -239,8 +239,8 @@ public class UserTests
 
     private static User CreateValidUser()
     {
-        var email = new Email("test@example.com");
-        var securePassword = new SecurePassword("TestPassword123!");
+        var email = Email.Parse("test@example.com");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User
@@ -255,8 +255,8 @@ public class UserTests
 
     private static User CreateValidUserWithRole(Role role)
     {
-        var email = new Email("test@example.com");
-        var securePassword = new SecurePassword("TestPassword123!");
+        var email = Email.Parse("test@example.com");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User
@@ -271,7 +271,7 @@ public class UserTests
 
     private static User CreateValidUserWithEmail(Email email)
     {
-        var securePassword = new SecurePassword("TestPassword123!");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User

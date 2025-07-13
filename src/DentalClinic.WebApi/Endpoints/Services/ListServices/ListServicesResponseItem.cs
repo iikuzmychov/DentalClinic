@@ -1,5 +1,5 @@
 ﻿using DentalClinic.Domain.Aggregates.ServiceAggregate;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 
 namespace DentalClinic.WebApi.Endpoints.Services.ListServices;
 

@@ -8,7 +8,7 @@ public sealed class JsonEmailConverter : JsonConverter<Email>
     public override Email? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => reader.TokenType switch
         {
-            JsonTokenType.String => new Email(reader.GetString()!),
+            JsonTokenType.String => Email.Parse(reader.GetString()!),
             JsonTokenType.Null => null,
             _ => throw new JsonException($"Unexpected token type: {reader.TokenType}. Expected a string or null.")
         };

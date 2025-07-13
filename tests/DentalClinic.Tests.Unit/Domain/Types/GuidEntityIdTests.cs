@@ -1,5 +1,5 @@
 using DentalClinic.Domain.Aggregates.PatientAggregate;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 
 namespace DentalClinic.Tests.Unit.Domain.Types;
 

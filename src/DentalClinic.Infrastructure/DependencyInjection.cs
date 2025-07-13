@@ -37,8 +37,8 @@ public static class DependencyInjection
             FirstName = "Адміністратор",
             LastName = "Клініки",
             Role = Role.Admin,
-            Email = new Email("admin@dental.clinic"),
-            HashedPassword = HashedPassword.FromSecurePassword(new SecurePassword("passW0RD!")),
+            Email = Email.Parse("admin@dental.clinic"),
+            HashedPassword = HashedPassword.FromSecurePassword(SecurePassword.Parse("passW0RD!")),
         };
 
         await dbContext.Users.AddAsync(adminUser, cancellationToken);

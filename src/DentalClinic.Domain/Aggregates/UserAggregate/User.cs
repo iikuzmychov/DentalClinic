@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Interfaces;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DentalClinic.Domain.Aggregates.UserAggregate;

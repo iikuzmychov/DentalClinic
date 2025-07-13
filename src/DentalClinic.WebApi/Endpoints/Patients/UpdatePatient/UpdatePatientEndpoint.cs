@@ -1,7 +1,7 @@
 ﻿using DentalClinic.Domain;
 using DentalClinic.Domain.Aggregates.PatientAggregate;
 using DentalClinic.Domain.Enums;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;

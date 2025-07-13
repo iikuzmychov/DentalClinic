@@ -1,9 +1,12 @@
+using DentalClinic.Domain;
+using DentalClinic.Domain.Aggregates.ServiceAggregate;
 using DentalClinic.Domain.JsonConverters;
 using DentalClinic.Infrastructure;
 using DentalClinic.WebApi;
 using DentalClinic.WebApi.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -38,12 +41,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplicationOpenApi();
 
 builder.Services.AddProblemDetails();
-
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.Converters.Add(new JsonGuidEntityIdConverterFactory());
-    options.SerializerOptions.Converters.Add(new JsonEmailConverter());
-});
 
 var application = builder.Build();
 

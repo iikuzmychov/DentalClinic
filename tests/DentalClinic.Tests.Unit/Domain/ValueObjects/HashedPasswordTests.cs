@@ -68,7 +68,7 @@ public class HashedPasswordTests
     public void FromSecurePassword_ValidPassword_ShouldCreateHashedPassword()
     {
         // Arrange
-        var securePassword = new SecurePassword("TestPassword123!");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
 
         // Act
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
@@ -90,7 +90,7 @@ public class HashedPasswordTests
     public void FromSecurePassword_SamePassword_ShouldGenerateDifferentHashes()
     {
         // Arrange
-        var password = new SecurePassword("TestPassword123!");
+        var password = SecurePassword.Parse("TestPassword123!");
 
         // Act
         var hashedPassword1 = HashedPassword.FromSecurePassword(password);
@@ -106,7 +106,7 @@ public class HashedPasswordTests
     {
         // Arrange
         var password = "TestPassword123!";
-        var securePassword = new SecurePassword(password);
+        var securePassword = SecurePassword.Parse(password);
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         // Act
@@ -122,7 +122,7 @@ public class HashedPasswordTests
         // Arrange
         var originalPassword = "TestPassword123!";
         var wrongPassword = "WrongPassword456!";
-        var securePassword = new SecurePassword(originalPassword);
+        var securePassword = SecurePassword.Parse(originalPassword);
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         // Act
@@ -136,7 +136,7 @@ public class HashedPasswordTests
     public void IsMatch_NullPassword_ShouldThrowArgumentNullException()
     {
         // Arrange
-        var securePassword = new SecurePassword("TestPassword123!");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         // Act & Assert

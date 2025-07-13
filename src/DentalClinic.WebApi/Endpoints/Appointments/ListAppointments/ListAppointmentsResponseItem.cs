@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
 using DentalClinic.Domain.Enums;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 
 namespace DentalClinic.WebApi.Endpoints.Appointments.ListAppointments;
 

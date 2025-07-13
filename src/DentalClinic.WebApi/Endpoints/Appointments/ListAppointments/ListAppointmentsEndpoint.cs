@@ -2,6 +2,7 @@
 using DentalClinic.Domain.Aggregates.UserAggregate;
 using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using DentalClinic.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +20,8 @@ internal sealed class ListAppointmentsEndpoint : IEndpoint<AppointmentsEndpointG
         [FromServices] ApplicationDbContext dbContext,
         [FromQuery] DateTime? startDateTime = null,
         [FromQuery] DateTime? endDateTime = null,
-        [FromQuery] Guid? dentistId = null,
-        [FromQuery] Guid? patientId = null,
+        [FromQuery] GuidEntityId<User>? dentistId = null,
+        [FromQuery] GuidEntityId<Patient>? patientId = null,
         [FromQuery] AppointmentStatus? status = null,
         CancellationToken cancellationToken = default)
     {
@@ -44,12 +45,12 @@ internal sealed class ListAppointmentsEndpoint : IEndpoint<AppointmentsEndpointG
 
         if (dentistId is not null)
         {
-            query = query.Where(appointment => appointment.Dentist.Id == new GuidEntityId<User>(dentistId.Value));
+            query = query.Where(appointment => appointment.Dentist.Id == dentistId.Value);
         }
 
         if (patientId is not null)
         {
-            query = query.Where(appointment => appointment.Patient.Id == new GuidEntityId<Patient>(patientId.Value));
+            query = query.Where(appointment => appointment.Patient.Id == patientId.Value);
         }
 
         if (status is not null)

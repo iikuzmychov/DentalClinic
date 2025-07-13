@@ -1,6 +1,7 @@
 ﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
 using DentalClinic.Domain.Enums;
 using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,12 +20,10 @@ internal sealed class PayAppointmentEndpoint : IEndpoint<AppointmentsEndpointGro
 
     private static async Task<Results<NoContent, NotFound, Conflict>> HandleAsync(
         [FromServices] ApplicationDbContext dbContext,
-        [FromRoute] Guid id,
+        [FromRoute] GuidEntityId<Appointment> id,
         CancellationToken cancellationToken = default)
     {
-        var appointmentToPay = await dbContext.Appointments.GetByIdOrDefaultAsync(
-            new GuidEntityId<Appointment>(id),
-            cancellationToken);
+        var appointmentToPay = await dbContext.Appointments.GetByIdOrDefaultAsync(id, cancellationToken);
 
         if (appointmentToPay is null)
         {

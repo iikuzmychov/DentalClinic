@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Aggregates.PatientAggregate;
 using DentalClinic.Domain.Aggregates.UserAggregate;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 
 namespace DentalClinic.WebApi.Endpoints.Appointments.AddAppointment;
 

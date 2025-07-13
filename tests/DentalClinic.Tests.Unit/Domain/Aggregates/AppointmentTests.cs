@@ -369,7 +369,7 @@ public class AppointmentTests
             FirstName = "John",
             LastName = "Doe",
             Surname = "Middle",
-            Email = new Email("patient@example.com")
+            Email = Email.Parse("patient@example.com")
         };
     }
 
@@ -380,14 +380,14 @@ public class AppointmentTests
             FirstName = "Jane",
             LastName = "Smith",
             Surname = "Middle",
-            Email = new Email(email)
+            Email = Email.Parse(email)
         };
     }
 
     private static User CreateValidDentist()
     {
-        var email = new Email("dentist@example.com");
-        var securePassword = new SecurePassword("TestPassword123!");
+        var email = Email.Parse("dentist@example.com");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User
@@ -402,8 +402,8 @@ public class AppointmentTests
 
     private static User CreateValidDentistWithEmail(string emailAddress)
     {
-        var email = new Email(emailAddress);
-        var securePassword = new SecurePassword("TestPassword123!");
+        var email = Email.Parse(emailAddress);
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User
@@ -418,8 +418,8 @@ public class AppointmentTests
 
     private static User CreateValidReceptionist()
     {
-        var email = new Email("receptionist@example.com");
-        var securePassword = new SecurePassword("TestPassword123!");
+        var email = Email.Parse("receptionist@example.com");
+        var securePassword = SecurePassword.Parse("TestPassword123!");
         var hashedPassword = HashedPassword.FromSecurePassword(securePassword);
 
         return new User

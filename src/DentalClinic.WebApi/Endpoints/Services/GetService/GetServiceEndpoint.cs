@@ -1,5 +1,5 @@
 ﻿using DentalClinic.Domain.Aggregates.ServiceAggregate;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using DentalClinic.Infrastructure;
 using DentalClinic.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;

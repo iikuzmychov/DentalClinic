@@ -109,7 +109,7 @@ public class PatientTests
     {
         // Arrange
         var patient = CreateValidPatient();
-        var newEmail = new Email("new@example.com");
+        var newEmail = Email.Parse("new@example.com");
 
         // Act
         patient.Email = newEmail;

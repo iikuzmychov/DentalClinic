@@ -1,4 +1,4 @@
-﻿using DentalClinic.Domain.Types;
+﻿using DentalClinic.Domain.ValueObjects;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

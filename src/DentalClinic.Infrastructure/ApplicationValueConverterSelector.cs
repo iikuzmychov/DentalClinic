@@ -1,4 +1,4 @@
-﻿using DentalClinic.Domain.Types;
+﻿using DentalClinic.Domain.ValueObjects;
 using DentalClinic.Infrastructure.Converters;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 

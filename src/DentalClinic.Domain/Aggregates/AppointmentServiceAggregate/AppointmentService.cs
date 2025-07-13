@@ -1,6 +1,6 @@
 ﻿using DentalClinic.Domain.Aggregates.AppointmentAggregate;
 using DentalClinic.Domain.Aggregates.ServiceAggregate;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DentalClinic.Domain.Aggregates.AppointmentServiceAggregate;

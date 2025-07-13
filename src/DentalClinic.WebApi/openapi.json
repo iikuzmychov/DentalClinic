@@ -402,8 +402,13 @@
             "name": "dentistId",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid",
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
               "default": null
             }
           },
@@ -411,8 +416,13 @@
             "name": "patientId",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid",
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
               "default": null
             }
           },

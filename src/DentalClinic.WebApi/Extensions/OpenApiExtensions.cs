@@ -1,5 +1,5 @@
 ﻿using DentalClinic.Domain;
-using DentalClinic.Domain.Types;
+using DentalClinic.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
