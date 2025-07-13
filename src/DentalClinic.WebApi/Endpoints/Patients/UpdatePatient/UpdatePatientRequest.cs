@@ -6,8 +6,8 @@ public sealed record UpdatePatientRequest
 {
     public required string LastName { get; init; }
     public required string FirstName { get; init; }
-    public required string? Surname { get; init; }
-    public required Email? Email { get; init; }
-    public required string? PhoneNumber { get; init; }
-    public required string? Notes { get; init; }
+    public string? Surname { get; init; }
+    public Email? Email { get; init; }
+    public string? PhoneNumber { get; init; }
+    public string? Notes { get; init; }
 }
